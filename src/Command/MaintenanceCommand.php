@@ -1,0 +1,147 @@
+<?php
+
+/**
+ * Mise en maintenance et 
+ * php bin/console maintenance on|off
+ */
+
+namespace App\Command;
+
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Validator\{
+    Validation,
+    Constraints
+};
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\{ 
+    InputInterface, 
+    InputArgument 
+};
+use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
+/***/
+use App\SiteService;
+
+class MaintenanceCommand extends BaseCommand
+{
+    /**
+     * @inheritdoc
+     */
+    protected static $defaultName = 'maintenance';
+
+    /********************************************************/
+
+    /**
+     * Constructeur
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        private ContainerBagInterface $configuration,
+        private SiteService $siteService
+    )
+    {
+        parent::__construct(static::$defaultName);
+    }
+
+    /********************************************************/
+
+    /**
+     * @inheritdoc
+     */
+    protected function configure() : void
+    {
+        $this
+            ->setDescription('Mise en maintenance et réactivation du site.')
+            ->addArgument('activeMaintenance', InputArgument::REQUIRED, 'Vrai s\'il faut activer la maintenance, faux sinon.')
+        ;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $activeMaintenance = $input->getArgument('activeMaintenance');
+    
+        $data = [
+            'active' => $activeMaintenance,
+        ];
+
+        $constraints = new Constraints\Collection([
+            'active' => [
+                new Constraints\NotBlank(message: 'Le paramètre activeMaintenance ne doit pas être vide.'),
+                new Constraints\Regex('/^(true|false)$/D', message: 'Le paramètre activeMaintenance doit être true ou false.')
+            ],
+        ]);
+
+        $errors = Validation::createValidator()->validate($data, $constraints);
+        if($errors->count() > 0)
+        {
+            $messages = [];
+            foreach($errors as $error)
+            {
+                $messages[] = $error->getMessage();
+            }
+            $message = implode(' ', $messages);
+            return $this->exitWithMessage($output, $message, Command::FAILURE);
+        }
+
+        return match($activeMaintenance) {
+            'true' => $this->enableMaintenance($output),
+            'false' => $this->disableMaintenance($output),
+            default => throw new \Exception('Paramètre incorrect.')
+        };
+    }
+
+    /**
+     * Active la maintenance
+     * @param OutputInterface $output
+     * @return int
+     */
+    private function enableMaintenance(OutputInterface $output)
+    {
+        $alreadyEnabled = $this->siteService->getMaintenanceEnabled();
+
+        if($alreadyEnabled)
+        {
+           $message = 'La maintenance est déjà activée.';
+           $responseStatus = self::SUCCESS;
+        }
+        else
+        {
+            $filePath = $this->configuration->get('maintenanceFilePath');
+            (new Filesystem())->dumpFile($filePath, '');
+            $responseStatus = (file_exists($filePath)) ? self::SUCCESS : self::FAILURE;
+            $message = ($responseStatus === self::SUCCESS) ? 'La maintenance a été activée.' : 'La maintenance n\'a pas pu être activée.';
+        }
+
+        return $this->exitWithMessage($output, $message, $responseStatus);
+    }
+
+    /**
+     * Désactive la maintenance
+     * @param OutputInterface $output
+     * @return int
+     */
+    private function disableMaintenance(OutputInterface $output)
+    {
+        $alreadyDisabled = (! $this->siteService->getMaintenanceEnabled());
+
+        if($alreadyDisabled)
+        {
+           $message = 'La maintenance est déjà désactivée.';
+           $responseStatus = self::SUCCESS;
+        }
+        else
+        {
+            $filePath = $this->configuration->get('maintenanceFilePath');
+            unlink($filePath);
+            $responseStatus = (! $this->siteService->getMaintenanceEnabled()) ? self::SUCCESS : self::FAILURE;
+            $message = ($responseStatus === self::SUCCESS) ? 'La maintenance a été désactivée.' : 'La maintenance n\'a pas pu être désactivée.';
+        }
+
+        return $this->exitWithMessage($output, $message, $responseStatus);
+    }
+
+}

@@ -1,4 +1,7 @@
+### Fichier de maintenance
+/.maintenance
 
+### IDE
 /.idea
 
 ###> symfony/framework-bundle ###
