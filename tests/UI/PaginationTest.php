@@ -4,13 +4,14 @@
  * Test sur la pagination
  */
 
-namespace App\Tests;
+namespace App\Tests\UI;
  
 use Twig\Environment as Twig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /***/
 use App\UI\Pagination\Pagination;
+use App\Tests\BaseTestCase;
 
 final class PaginationTest extends BaseTestCase {
  
