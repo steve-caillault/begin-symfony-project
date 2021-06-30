@@ -19,7 +19,7 @@ final class PaginationService {
      * Requête courante
      * @var Request
      */
-    private Request $request;
+    private ?Request $request;
 
     /**
      * Constructeur
@@ -34,6 +34,15 @@ final class PaginationService {
     )
     {
         $this->request = $requestStack->getCurrentRequest();
+    }
+
+    /**
+     * Retourne la requête de la pagination
+     * @return ?Request
+     */
+    private function getRequest(Pagination $pagination) : ?Request
+    {
+        return ($pagination->getRequest() ?? $this->request);
     }
 
     /**
@@ -93,12 +102,9 @@ final class PaginationService {
             }
         }
 
-
         return $this->twig->render('ui/pagination.html.twig', [
             'elements' => $elements,
-            'pages' => $pages,
             'current' => $currentPage,
-            'total' => $totalPages,
         ]);
     }
 
@@ -112,9 +118,10 @@ final class PaginationService {
         $parameterType = $pagination->getPageParameterType();
         $parameterName = $pagination->getPageParameterName();
 
+        $request = $this->getRequest($pagination);
         $currentParams = match($parameterType) {
-            Pagination::METHOD_QUERY => $this->request?->query->all() ?? [],
-            Pagination::METHOD_ROUTE => $this->request?->attributes->all() ?? [],
+            Pagination::METHOD_QUERY => $request?->query->all() ?? [],
+            Pagination::METHOD_ROUTE => $request?->attributes->all() ?? [],
         };
 
         $pageParam = (int) ($currentParams[$parameterName] ?? 1);
@@ -141,25 +148,23 @@ final class PaginationService {
 			return null;
 		}
 		
-        $requestRouteParams = $this->request?->attributes->all() ?? [];
-        $requestQueryParams = $this->request?->query->all() ?? [];
+        $request = $this->getRequest($pagination);
+        $requestRouteParams = $request?->attributes->all() ?? [];
+        $requestQueryParams = $request?->query->all() ?? [];
 
         // Récupération des paramètres de la route et GET actuel
 		$routeParams = array_filter($requestRouteParams, fn($key) => (($key[0] ?? '') != '_'), ARRAY_FILTER_USE_KEY);
 		$queryParams = array_filter($requestQueryParams, fn($key) => (($key[0] ?? '') != '_'), ARRAY_FILTER_USE_KEY);
-        
+
         // Affecte le numéro de page à la route ou au paramètre GET
         $method = strtolower($pagination->getPageParameterType());
         $pageParamName = $pagination->getPageParameterName();
         ${ $method . 'Params' }[$pageParamName] = $page;
-		
-		$routeName = $this->request?->attributes->get('_route');
-		$uri = $this->urlGenerator->generate($routeName, $routeParams);
 
-		if(count($queryParams) > 0)
-		{
-			$uri .= '?' . http_build_query($queryParams);
-        }
+        $params = array_merge($routeParams, $queryParams);
+		
+		$routeName = $request?->attributes->get('_route');
+		$uri = $this->urlGenerator->generate($routeName, $params);
 		
 		return $uri;
     }

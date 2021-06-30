@@ -6,6 +6,8 @@
 
 namespace App\UI\Pagination;
 
+use Symfony\Component\HttpFoundation\Request;
+
 final class Pagination {
 	
 	public const 
@@ -42,6 +44,12 @@ final class Pagination {
 	 * @var int
 	 */
 	private int $total_pages;
+
+    /**
+     * Requête HTTP à utilisée (notamment pour les tests)
+     * @var ?Request
+     */
+    private ?Request $request = null;
 	
 	/*********************************************************************************/
 	
@@ -132,6 +140,26 @@ final class Pagination {
     public function setPageParameterName(string $name) : self
     {
         $this->page_parameter_name = $name;
+        return $this;
+    }
+
+    /**
+     * Retourne la requête à utiliser pour les tests
+     * @return ?Request
+     */
+    public function getRequest() : ?Request
+    {
+        return $this->request;
+    }
+
+    /**
+     * Modifie la requête à utiliser pour les tests
+     * @param Request $request
+     * @return self
+     */
+    public function setRequest(Request $request) : self
+    {
+        $this->request = $request;
         return $this;
     }
 
