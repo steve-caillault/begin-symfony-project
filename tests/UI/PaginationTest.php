@@ -90,7 +90,7 @@ final class PaginationTest extends BaseTestCase {
                         $request
                     );
                 
-                    $this->assertStringContainsString($expected, $render);
+                    $this->assertEquals($expected, $render);
                 }
             }
         }
@@ -187,9 +187,23 @@ final class PaginationTest extends BaseTestCase {
             }
         }
 
-        return $this->getService(Twig::class)->render('ui/pagination.html.twig', [
-            'elements' => $elements,
-            'current' => $currentPage,
-        ]);
+        $elementsFormatted = [];
+        foreach($elements as $index => $element)
+        {
+            $value = $element;
+            if($index === $currentPage)
+            {
+                $value = '<span>' . $index . '</span>';
+            }
+            elseif(is_numeric($index))
+            {
+                $value = '<a href="' . $element . '">' . $index . '</a>';
+            }
+            $elementsFormatted[] = '<li class="page">' . $value . '</li>';
+        }
+
+        $content = '<ul class="pagination">' . implode('', $elementsFormatted) . '</ul>';
+        
+        return $content;
     }
 }

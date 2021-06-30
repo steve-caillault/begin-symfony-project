@@ -1,13 +1,13 @@
 <ul class="pagination">
-    {% for key, element in elements %}
+    {%- for key, element in elements -%}
         <li class="page">
-            {% if key == current %}
+            {%- if key == current -%}
                 <span>{{ key }}</span>
-            {% elseif element == '...' %}
+            {%- elseif element == '...' -%}
                 {{ element }}
-            {% else %}
+            {%- else -%}
                 <a href="{{ element }}">{{ key }}</a>
-            {% endif %}
+            {%- endif -%}
         </li>
-    {% endfor %}
+    {%- endfor -%}
 </ul>
