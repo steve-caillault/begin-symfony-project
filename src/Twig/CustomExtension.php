@@ -23,6 +23,7 @@ final class CustomExtension extends AbstractExtension {
 
         return [
             new TwigFunction('pagination', [ PaginationRuntime::class, 'getRender', ], $defaultOptions),
+            new TwigFunction('breadcrumb', [ MenusRuntime::class, 'getBreadcrumbRender', ], $defaultOptions),
         ];
     }
 
