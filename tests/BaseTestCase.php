@@ -6,13 +6,20 @@
 
 namespace App\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Faker\{ 
     Factory as FakerFactory, 
     Generator as FakerGenerator 
 };
 
-abstract class BaseTestCase extends KernelTestCase {
+abstract class BaseTestCase extends WebTestCase {
+
+    /**
+     * Client HTTP
+     * @var KernelBrowser
+     */
+    private KernelBrowser $httpClient;
 
     /**
      * Objet Faker pour générer de fausse données
@@ -44,12 +51,24 @@ abstract class BaseTestCase extends KernelTestCase {
     }
 
     /**
+     * Retourne le client HTTP
+     * @return KernelBrowser
+     */
+    protected function getHttpClient() : KernelBrowser
+    {
+        return $this->httpClient;
+    }
+
+    /**
      * Setup
      * @return void
      */
     protected function setUp() : void
     {
-        $kernel = static::bootKernel();
+        parent::setUp();
+        $this->httpClient = static::createClient();
+
+        // $kernel = static::$kernel;
     }
 
     /**

@@ -85,7 +85,7 @@ class SiteService {
     public function isAdminSection() : bool
     {
         $routeName = $this->request?->attributes->get('_route');
-        return str_starts_with($routeName, 'admin_');
+        return (strpos($routeName, 'admin_') !== false);
     }
 
     /**

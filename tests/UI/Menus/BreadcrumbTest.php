@@ -53,10 +53,10 @@ final class BreadcrumbTest extends BaseTestCase {
     {
         $breadcrumb = (new Breadcrumb())
             ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1'))
-            ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', 'testing.pagination', [
+            ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', 'testing_pagination', [
                 'param1' => 'new-value-1',
             ]))
-            ->addItem(new BreadcrumbItem('Label 3', 'Alt Label 3', 'testing.pagination', [
+            ->addItem(new BreadcrumbItem('Label 3', 'Alt Label 3', 'testing_pagination', [
                 'param1' => 'new-value-2',
             ]))
         ;

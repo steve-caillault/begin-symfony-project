@@ -73,7 +73,7 @@ final class PaginationTest extends BaseTestCase {
                     $request = Request::create('testing/pagination')->duplicate(
                         query: $query,
                         attributes: array_merge($routeParams, [
-                            '_route' => 'testing.pagination',
+                            '_route' => 'testing_pagination',
                         ])
                     );
 
@@ -143,7 +143,7 @@ final class PaginationTest extends BaseTestCase {
             }
             else
             {
-                $label = $urlGenerator->generate('testing.pagination', array_merge($params, [
+                $label = $urlGenerator->generate('testing_pagination', array_merge($params, [
                     $paramName => $i,
                 ]));
             }

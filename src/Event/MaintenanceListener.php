@@ -40,7 +40,7 @@ final class MaintenanceListener {
     	{
     		return;
     	}
-    	
+
         // Le site n'est pas en maintenance, on s'arrête
     	if(! $this->siteService->getMaintenanceEnabled())
         {
@@ -56,7 +56,7 @@ final class MaintenanceListener {
                 'data' => [
                     'maintenance' => true,
                 ],
-            ]);
+            ], $responseCode);
         }
         else
         {

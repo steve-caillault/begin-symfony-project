@@ -4,7 +4,7 @@
  * Contrôleur de test
  */
 
-namespace App\Controller;
+namespace App\Controller\Testing;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
@@ -24,7 +24,7 @@ final class TestingController extends AbstractController {
             path: 'testing',
             name: 'testing',
             methods: [ 'GET' ],
-            condition: '\'%kernel.environment%\' === \'dev\''
+            condition: "'%kernel.environment%' in [ 'dev', 'test' ]"
         )
     ]
     public function index() : Response
@@ -40,9 +40,9 @@ final class TestingController extends AbstractController {
     #[
         RouteAnnotation(
             path: 'testing/pagination/{param1}/{customPage}',
-            name: 'testing.pagination',
+            name: 'testing_pagination',
             methods: [ 'GET' ],
-            condition: '\'%kernel.environment%\' === \'dev\'',
+            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
             defaults: [ 
                 'param1' => 'value1',
                 'customPage' => 1
@@ -57,5 +57,23 @@ final class TestingController extends AbstractController {
     {
         return new Response();
     }
+
+    /**
+     * Page de test de l'administration
+     * @return Response
+     */
+    #[
+        RouteAnnotation(
+            path: 'testing/admin',
+            name: 'testing_admin_index',
+            methods: [ 'GET' ],
+            condition: "'%kernel.environment%' in [ 'dev', 'test' ]"
+        )
+    ]
+    public function testingAdmin() : Response
+    {
+        return new Response('admin');
+    }
+    
 
 }

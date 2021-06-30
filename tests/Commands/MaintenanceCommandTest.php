@@ -8,11 +8,13 @@
 namespace App\Tests\Commands;
 
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+/***/
+use App\Tests\WithMaintenanceTrait;
 
 final class MaintenanceCommandTest extends CommandTestCase
 {
+    use WithMaintenanceTrait;
 
     /**
      * Setup
@@ -179,32 +181,6 @@ final class MaintenanceCommandTest extends CommandTestCase
     }
 
     /************************************************************/
-
-    /**
-     * Active la maintenance
-     * @return void
-     */
-    private function enableMaintenance() : void
-    {
-        $filePath = $this->getService(ContainerBagInterface::class)->get('maintenanceFilePath');
-        if(! file_exists($filePath))
-        {
-            (new Filesystem())->dumpFile($filePath, '');
-        }
-    }
-
-    /**
-     * Désactive la maintenance
-     * @return void
-     */
-    private function disableMaintenance() : void
-    {
-        $filePath = $this->getService(ContainerBagInterface::class)->get('maintenanceFilePath');
-        if(file_exists($filePath))
-        {
-            unlink($filePath);
-        }
-    }
 
     /**
      * Test de maintenance avec un paramètre manquant
