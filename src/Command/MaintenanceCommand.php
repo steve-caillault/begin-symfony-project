@@ -20,10 +20,8 @@ use Symfony\Component\Console\Input\{
 };
 use Symfony\Component\Console\Output\OutputInterface;
 use Psr\Log\LoggerInterface;
-/***/
-use App\SiteService;
 
-class MaintenanceCommand extends BaseCommand
+final class MaintenanceCommand extends BaseCommand
 {
     /**
      * @inheritdoc
@@ -36,10 +34,7 @@ class MaintenanceCommand extends BaseCommand
      * Constructeur
      * @param LoggerInterface $logger
      */
-    public function __construct(
-        private ContainerBagInterface $configuration,
-        private SiteService $siteService
-    )
+    public function __construct(private ContainerBagInterface $configuration)
     {
         parent::__construct(static::$defaultName);
     }
@@ -101,7 +96,8 @@ class MaintenanceCommand extends BaseCommand
      */
     private function enableMaintenance(OutputInterface $output)
     {
-        $alreadyEnabled = $this->siteService->getMaintenanceEnabled();
+        $filePath = $this->configuration->get('maintenanceFilePath');
+        $alreadyEnabled = file_exists($filePath);
 
         if($alreadyEnabled)
         {
@@ -110,7 +106,7 @@ class MaintenanceCommand extends BaseCommand
         }
         else
         {
-            $filePath = $this->configuration->get('maintenanceFilePath');
+            
             (new Filesystem())->dumpFile($filePath, '');
             $responseStatus = (file_exists($filePath)) ? self::SUCCESS : self::FAILURE;
             $message = ($responseStatus === self::SUCCESS) ? 'La maintenance a été activée.' : 'La maintenance n\'a pas pu être activée.';
@@ -126,7 +122,8 @@ class MaintenanceCommand extends BaseCommand
      */
     private function disableMaintenance(OutputInterface $output)
     {
-        $alreadyDisabled = (! $this->siteService->getMaintenanceEnabled());
+        $filePath = $this->configuration->get('maintenanceFilePath');
+        $alreadyDisabled = (! file_exists($filePath));
 
         if($alreadyDisabled)
         {
@@ -135,9 +132,9 @@ class MaintenanceCommand extends BaseCommand
         }
         else
         {
-            $filePath = $this->configuration->get('maintenanceFilePath');
+            
             unlink($filePath);
-            $responseStatus = (! $this->siteService->getMaintenanceEnabled()) ? self::SUCCESS : self::FAILURE;
+            $responseStatus = (! file_exists($filePath)) ? self::SUCCESS : self::FAILURE;
             $message = ($responseStatus === self::SUCCESS) ? 'La maintenance a été désactivée.' : 'La maintenance n\'a pas pu être désactivée.';
         }
 
