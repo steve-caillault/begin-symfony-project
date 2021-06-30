@@ -10,3 +10,8 @@ when@prod:
     framework:
         router:
             strict_requirements: null
+
+when@test:
+    framework:
+        router:
+            default_uri: https://begin-symfony-project.name
