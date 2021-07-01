@@ -116,7 +116,7 @@ final class MaintenanceControllerTest extends BaseTestCase {
     public function testAdminEnabled() : void
     {
         $this->enableMaintenance();
-        $this->getHttpClient()->xmlHttpRequest('GET', '/testing/admin');
+        $this->getHttpClient()->request('GET', '/testing/admin');
 
         $client = $this->getHttpClient();
         $responseContent = $client->getResponse()->getContent();
@@ -126,7 +126,45 @@ final class MaintenanceControllerTest extends BaseTestCase {
     }
 
     /**
-     * Appel Ajax au panneau d'administration lorsque la maintenance n'est pas activée
+     * Appel au panneau d'administration lorsque la maintenance est désactivée
+     * @return void
+     */
+    public function testAdminDisabled() : void
+    {
+        $this->getHttpClient()->request('GET', '/testing/admin');
+
+        $client = $this->getHttpClient();
+        $responseContent = $client->getResponse()->getContent();
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertStringNotContainsStringIgnoringCase('Maintenance', $responseContent);
+    }
+
+    /**
+     * Appel Ajax au panneau d'administration lorsque la maintenance est activée
+     * @return void
+     */
+    public function testAdminAjaxEnabled() : void
+    {
+        $this->enableMaintenance();
+        $this->getHttpClient()->xmlHttpRequest('GET', '/testing/admin/ajax');
+
+        $client = $this->getHttpClient();
+        $responseContent = $client->getResponse()->getContent();
+
+        $expectedContent = json_encode([
+            'status' => 'SUCCESS',
+            'data' => [
+                'admin' => true,
+            ],
+        ]);
+
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEquals($expectedContent, $responseContent);
+    }
+
+    /**
+     * Appel Ajax au panneau d'administration lorsque la maintenance est déactivée
      * @return void
      */
     public function testAdminAjaxDisabled() : void

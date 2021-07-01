@@ -12,7 +12,13 @@ use Symfony\Component\HttpFoundation\{
     RequestStack
 };
 
-class SiteService {
+final class SiteService {
+
+    /**
+     * Nom du site
+     * @var string
+     */
+    private string $siteName;
 
     /**
      * Vrai si la maintenance est active
@@ -39,6 +45,7 @@ class SiteService {
      */
     public function __construct(private ContainerBagInterface $configuration, RequestStack $requestStack)
     {
+        $this->siteName = $configuration->get('siteName');
         $this->request = $requestStack->getCurrentRequest();
     }
     
@@ -96,6 +103,26 @@ class SiteService {
     {
         $routeName = $this->request?->attributes->get('_route');
         return (strpos($routeName, '_auth_') !== false);
+    }
+
+    /**
+     * Retourne le nom du site (à définir dans le fichier de configuration services.yaml : parameters.siteName)
+     * @return ?string
+     */
+    public function getName() : ?string
+    {
+        return $this->siteName;
+    }
+
+    /**
+     * Modification de la requête
+     * @param Request $request
+     * @retur self
+     */
+    public function setRequest(Request $request) : self
+    {
+        $this->request = $request;
+        return $this;
     }
 
 }

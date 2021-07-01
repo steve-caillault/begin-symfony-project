@@ -4,7 +4,7 @@
  * Test du contrôleur d'erreur
  */
 
-namespace App\Tests\Controller;
+namespace App\Tests\Controllers;
 
 use App\Tests\BaseTestCase;
 
