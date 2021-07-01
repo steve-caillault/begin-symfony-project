@@ -11,6 +11,11 @@ when@prod:
         router:
             strict_requirements: null
 
+when@staging:
+    framework:
+        router:
+            strict_requirements: null
+
 when@test:
     framework:
         router:
