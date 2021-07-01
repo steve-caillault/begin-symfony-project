@@ -17,6 +17,12 @@ framework:
     php_errors:
         log: true
 
+    error_controller: App\Controller\ErrorController::index
+
+when@dev:
+    framework:
+        error_controller: ~
+
 when@test:
     framework:
         test: true
