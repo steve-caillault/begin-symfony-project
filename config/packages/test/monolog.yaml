@@ -10,3 +10,9 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+
+        database:
+            type: service
+            id: App\Logger\DatabaseHandler
+            level: debug
+            channels: [ "!event", "!doctrine" ]
