@@ -8,6 +8,13 @@ namespace App\Controller\Testing;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
+use Symfony\Component\HttpKernel\Exception\{
+    UnauthorizedHttpException,
+    AccessDeniedHttpException,
+    NotFoundHttpException,
+    HttpException,
+    
+};
 use Symfony\Component\HttpFoundation\{
     Request,
     Response
@@ -73,6 +80,38 @@ final class TestingController extends AbstractController {
     public function testingAdmin() : Response
     {
         return new Response('admin');
+    }
+
+    /**
+     * Page de test d'erreur
+     * @param int $errorStatus
+     * @return Response
+     */
+    #[
+        RouteAnnotation(
+            path: '/testing/error-{errorStatus}',
+            name: 'testing_error',
+            methods: [ 'GET' ],
+            condition: "'%kernel.environment%' === 'test'",
+            requirements: [ 'errorStatus' => '[0-9]{3}' ]
+        )
+    ]
+    public function error(int $errorStatus) : Response
+    {
+        
+        $exception = match($errorStatus) {
+            401 => new UnauthorizedHttpException(''),
+            403 => new AccessDeniedHttpException(),
+            404 => new NotFoundHttpException(),
+            default => new HttpException(500)
+        };
+
+        $response = $this->forward('App\Controller\ErrorController::index', [
+            'exception' => $exception,
+        ]);
+
+        return $response;
+
     }
     
 
