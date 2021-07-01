@@ -1,5 +1,7 @@
 ### Fichier de maintenance
 /.maintenance
+### Migration Doctrine
+/migrations/*
 
 ### IDE
 /.idea
