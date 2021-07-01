@@ -6,12 +6,15 @@
 
 namespace App\Tests;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Faker\{ 
     Factory as FakerFactory, 
     Generator as FakerGenerator 
 };
+/***/
+use App\Repository\EntityRepositoryInterface;
 
 abstract class BaseTestCase extends WebTestCase {
 
@@ -20,6 +23,12 @@ abstract class BaseTestCase extends WebTestCase {
      * @var KernelBrowser
      */
     private KernelBrowser $httpClient;
+
+    /**
+     * Entity Manager
+     * @var EntityManagerInterface
+     */
+    private ?EntityManagerInterface $entityManager = null;
 
     /**
      * Objet Faker pour générer de fausse données
@@ -51,6 +60,16 @@ abstract class BaseTestCase extends WebTestCase {
     }
 
     /**
+     * Retourne le repository de la classe en paramètre
+     * @param string $class
+     * @return EntityRepositoryInterface
+     */
+    protected function getRepository(string $class) : EntityRepositoryInterface
+    {
+        return $this->entityManager->getRepository($class);
+    }
+
+    /**
      * Retourne le client HTTP
      * @return KernelBrowser
      */
@@ -68,7 +87,14 @@ abstract class BaseTestCase extends WebTestCase {
         parent::setUp();
         $this->httpClient = static::createClient();
 
-        // $kernel = static::$kernel;
+        $kernel = static::$kernel;
+
+        $this->entityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
+        // Pour pouvoir déterminer les requêtes à annuler dans static::tearDown()
+        $this->entityManager->getConnection()->beginTransaction();
     }
 
     /**
@@ -77,6 +103,10 @@ abstract class BaseTestCase extends WebTestCase {
     protected function tearDown(): void
     {
         parent::tearDown();
+
+        $this->entityManager->getConnection()->rollback(); // Retour à l'état initial
+        $this->entityManager->close();
+        $this->entityManager = null;
     }
 
 }
