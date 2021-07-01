@@ -7,6 +7,8 @@
 namespace App\Tests\UI\Menus;
  
 use Twig\Environment as Twig;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /***/
@@ -51,6 +53,10 @@ final class BreadcrumbTest extends BaseTestCase {
      */
     public function testWithFewElements() : void
     {
+        $itemTwoUrl = $this->getService(RouterInterface::class)->generate('testing_pagination', [
+            'param1' => 'new-value-1',
+        ], referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
+
         $breadcrumb = (new Breadcrumb())
             ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1'))
             ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', 'testing_pagination', [
@@ -64,7 +70,7 @@ final class BreadcrumbTest extends BaseTestCase {
         $expected = 
             '<ul id="breadcrumb">' . 
                 '<li>Label 1</li>' . 
-                '<li><a href="https://begin-symfony-project.name/testing/pagination/new-value-1" title="Alt Label 2">Label 2</a></li>' .
+                '<li><a href="' . $itemTwoUrl . '" title="Alt Label 2">Label 2</a></li>' .
                 '<li>Label 3</li>' .
             '</ul>'
         ;
