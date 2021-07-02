@@ -28,6 +28,11 @@ final class AuthController extends AdminController {
     ]
     public function login(AuthenticationUtils $authenticationUtils) : Response
     {
+        if($this->getUser() !== null)
+        {
+            return $this->redirectToRoute('admin_index');
+        }
+
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
