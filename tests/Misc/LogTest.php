@@ -6,7 +6,7 @@
 
 namespace App\Tests\Misc;
 
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\RouterInterface;
 /***/
 use App\Tests\BaseTestCase;
 use App\Entity\Log;
@@ -20,20 +20,37 @@ final class LogTest extends BaseTestCase {
     public function testSaving() : void
     {
         $faker = $this->getFaker();
+        $message = $faker->text();
+        $userAgent = $faker->userAgent();
+
+        $uri = $this->getService(RouterInterface::class)->generate('testing_log', [
+            'message' => $message,
+        ]);
+
         $client = $this->getHttpClient();
         $client->setServerParameters([
-            'HTTP_USER_AGENT' => $faker->userAgent(),
+            'HTTP_USER_AGENT' => $userAgent,
         ]);
-        $client->request('GET', '/testing/admin');
-
-        $logger = $this->getService(LoggerInterface::class);
-        $message = $faker->text();
-        $logger->debug($message);
+        $client->request('GET', $uri);
 
         $repository = $this->getRepository(Log::class);
         $lastLog = $repository->findOneBy([], orderBy: [ 'date' => 'desc' ]);
 
-        $this->assertEquals($message, $lastLog->getMessage());
+        $dataExpected = [
+            'uri' => $uri,
+            'message' => $message,
+            'user_agent' => $userAgent,
+            'level' => 'DEBUG',
+        ];
+
+        $dataCurrent = [
+            'level' => $lastLog?->getLevel(),
+            'uri' => $lastLog?->getUri(),
+            'message' => $lastLog?->getMessage(),
+            'user_agent' => $lastLog?->getUserAgent(),
+        ];
+
+        $this->assertEquals($dataExpected, $dataCurrent);
     }
 
 }

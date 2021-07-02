@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\HttpFoundation\{ 
     Request, 
     RequestStack
+    
 };
 
 final class SiteService {
@@ -26,12 +27,6 @@ final class SiteService {
      */
     private ?bool $maintenanceEnabled = null;
 
-    /** 
-     * Requête HTTP
-     * @var Request
-     */
-    private ?Request $request;
-
     /**
      * Vrai si on se trouve sur une page d'erreur
      * @var bool
@@ -43,10 +38,9 @@ final class SiteService {
      * @param ContainerBagInterface $configuration
      * @param RequestStack $requestStack
      */
-    public function __construct(private ContainerBagInterface $configuration, RequestStack $requestStack)
+    public function __construct(private ContainerBagInterface $configuration, private RequestStack $requestStack)
     {
         $this->siteName = $configuration->get('siteName');
-        $this->request = $requestStack->getCurrentRequest();
     }
     
     /*********************************************/
@@ -91,7 +85,7 @@ final class SiteService {
      */
     public function isAdminSection() : bool
     {
-        $routeName = $this->request?->attributes->get('_route');
+        $routeName = $this->getRequest()?->attributes->get('_route');
         return (strpos($routeName, 'admin_') !== false);
     }
 
@@ -101,7 +95,7 @@ final class SiteService {
      */
     public function isAuthSection() : bool
     {
-        $routeName = $this->request?->attributes->get('_route');
+        $routeName = $this->getRequest()?->attributes->get('_route');
         return (strpos($routeName, '_auth_') !== false);
     }
 
@@ -115,14 +109,12 @@ final class SiteService {
     }
 
     /**
-     * Modification de la requête
-     * @param Request $request
-     * @retur self
+     * Retourne la requête courante
+     * @return ?Request
      */
-    public function setRequest(Request $request) : self
+    private function getRequest() : ?Request
     {
-        $this->request = $request;
-        return $this;
+        return $this->requestStack->getCurrentRequest();
     }
 
 }

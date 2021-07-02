@@ -19,6 +19,9 @@ use Symfony\Component\HttpFoundation\{
     Request,
     Response
 };
+use Psr\Log\LoggerInterface;
+/***/
+use App\UI\Pagination\Pagination;
 
 final class TestingController extends AbstractController {
 
@@ -40,29 +43,69 @@ final class TestingController extends AbstractController {
     }
 
     /**
-     * Page de test de la pagination
-     * @param Request $request
+     * Page de tests avec des paramètres dans la route
      * @return Response
      */
     #[
         RouteAnnotation(
-            path: 'testing/pagination/{param1}/{customPage}',
-            name: 'testing_pagination',
+            path: 'testing/with-params/{param1}',
+            name: 'testing_with_params',
             methods: [ 'GET' ],
             condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
-            defaults: [ 
-                'param1' => 'value1',
-                'customPage' => 1
-            ],
-            requirements: [ 
+            requirements: [
                 'param1' => '[^\/]+',
-                'customPage' => '[0-9]+' 
             ],
         )
     ]
-    public function testingPagination(Request $request) : Response
+    public function testingWithParams() : Response
     {
+
         return new Response();
+    }
+
+    /**
+     * Page de test de la pagination
+     * @param Request $request
+     * @param string $paramType
+     * @param string $paramName
+     * @param int $itemsPerPage
+     * @param int $totalItems
+     * @return Response
+     */
+    #[
+        RouteAnnotation(
+            path: 'testing/pagination/{paramType}/{paramName}/{itemsPerPage}/{totalItems}/{customPage}',
+            name: 'testing_pagination',
+            methods: [ 'GET' ],
+            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
+            defaults: [
+                'customPage' => 1,
+            ],
+            requirements: [ 
+                'paramType' => 'query|route',
+                'paramName' => '[^\/]+',
+                'itemsPerPage' => '[0-9]+',
+                'totalItems' => '[0-9]+',
+                'customPage' => '[0-9]+',
+            ],
+        )
+    ]
+    public function testingPagination(
+        Request $request, 
+        string $paramType, 
+        string $paramName, 
+        int $itemsPerPage,
+        int $totalItems
+    ) : Response
+    {
+        $pagination = (new Pagination(itemsPerPage: $itemsPerPage, totalItems: $totalItems))
+            ->setPageParameterName($paramName)
+            ->setPageParameterType($paramType)
+        ;
+
+        return $this->render('testing/ui/pagination.html.twig', [
+            'pagination' => $pagination,
+        ]);
     }
 
     /**
@@ -112,6 +155,27 @@ final class TestingController extends AbstractController {
 
         return $response;
 
+    }
+
+    /**
+     * Page de test de log
+     * @param LoggerInterface $logger
+     * @param string $message
+     * @return Response
+     */
+    #[
+        RouteAnnotation(
+            path: '/testing/log/{message}',
+            name: 'testing_log',
+            methods: [ 'GET' ],
+            condition: "'%kernel.environment%' === 'test'",
+            requirements: [ 'message' => '[^\/]+' ]
+        )
+    ]
+    public function log(LoggerInterface $logger, string $message) : Response
+    {
+        $logger->debug($message);
+        return new Response();
     }
     
 

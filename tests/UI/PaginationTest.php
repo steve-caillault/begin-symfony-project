@@ -9,6 +9,7 @@ namespace App\Tests\UI;
 use Twig\Environment as Twig;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 /***/
 use App\UI\Pagination\Pagination;
 use App\Tests\BaseTestCase;
@@ -45,6 +46,8 @@ final class PaginationTest extends BaseTestCase {
            Pagination::METHOD_ROUTE => 'customPage',
         ];
 
+        $client = $this->getHttpClient();
+
         foreach($tests as $totalItems)
         {
             $totalPages = (int) ceil($totalItems / $itemsPerPage);
@@ -61,27 +64,35 @@ final class PaginationTest extends BaseTestCase {
 
                     $routeParams = match($paramType) {
                         Pagination::METHOD_ROUTE => [
-                            'param1' => 'value2',
                             $paramName => $currentPage,
                         ],
-                        default => [
-                            'param1' => 'value3',
-                        ]
+                        default => []
                     };
 
-                    // Simule une requête pour générer les URL
+                    $uriRouteParams = $query + $routeParams + [
+                        'paramName' => $paramName,
+                        'paramType' => $paramType,
+                        'itemsPerPage' => $itemsPerPage,
+                        'totalItems' => $totalItems,
+                    ];
+
+                    $uri = $this->getService(RouterInterface::class)->generate('testing_pagination', $uriRouteParams);
+
+
+                    $client->request('GET', $uri);
+
+                    $responseContent = $client->getResponse()->getContent();
+
+                   
+
                     $request = Request::create('testing/pagination')->duplicate(
                         query: $query,
-                        attributes: array_merge($routeParams, [
+                        attributes: array_merge($uriRouteParams, [
                             '_route' => 'testing_pagination',
                         ])
                     );
 
-                    $pagination = (new Pagination(itemsPerPage: $itemsPerPage, totalItems: $totalItems))
-                        ->setPageParameterName($paramName)
-                        ->setPageParameterType($paramType)
-                        ->setRequest($request);
-                    $render = $this->getPaginationRender($pagination);
+
 
                     $expected = $this->getPaginationRenderExpected(
                         $currentPage, 
@@ -89,8 +100,8 @@ final class PaginationTest extends BaseTestCase {
                         $paramName, 
                         $request
                     );
-                
-                    $this->assertEquals($expected, $render);
+                    
+                    $this->assertEquals($expected, $responseContent);
                 }
             }
         }

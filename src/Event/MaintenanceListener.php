@@ -34,8 +34,6 @@ final class MaintenanceListener {
      */
     public function onKernelRequest(RequestEvent $event) : void
     {
-        $this->siteService->setRequest($event->getRequest());
-
     	// Si on se trouve sur une page du panneau d'administration, on n'affiche pas la maintenance
         $isAdminSection = ($this->siteService->isAdminSection());
     	if($isAdminSection)

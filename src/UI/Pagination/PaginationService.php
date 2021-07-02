@@ -16,12 +16,6 @@ use Symfony\Component\HttpFoundation\{
 final class PaginationService {
 
     /**
-     * Requête courante
-     * @var Request
-     */
-    private ?Request $request;
-
-    /**
      * Constructeur
      * @param Twig $twig
      * @param UrlGeneratorInterface $urlGenerator
@@ -30,19 +24,19 @@ final class PaginationService {
     public function __construct(
         private Twig $twig, 
         private UrlGeneratorInterface $urlGenerator,
-        RequestStack $requestStack
+        private RequestStack $requestStack
     )
     {
-        $this->request = $requestStack->getCurrentRequest();
+
     }
 
     /**
-     * Retourne la requête de la pagination
+     * Retourne la requête HTTP
      * @return ?Request
      */
-    private function getRequest(Pagination $pagination) : ?Request
+    private function getRequest() : ?Request
     {
-        return ($pagination->getRequest() ?? $this->request);
+        return $this->requestStack->getCurrentRequest();
     }
 
     /**
@@ -118,7 +112,7 @@ final class PaginationService {
         $parameterType = $pagination->getPageParameterType();
         $parameterName = $pagination->getPageParameterName();
 
-        $request = $this->getRequest($pagination);
+        $request = $this->getRequest();
         $currentParams = match($parameterType) {
             Pagination::METHOD_QUERY => $request?->query->all() ?? [],
             Pagination::METHOD_ROUTE => $request?->attributes->all() ?? [],
@@ -148,7 +142,7 @@ final class PaginationService {
 			return null;
 		}
 		
-        $request = $this->getRequest($pagination);
+        $request = $this->getRequest();
         $requestRouteParams = $request?->attributes->all() ?? [];
         $requestQueryParams = $request?->query->all() ?? [];
 

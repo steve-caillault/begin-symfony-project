@@ -27,10 +27,10 @@ final class DatabaseHandler extends AbstractProcessingHandler
     private SiteService $siteService;
 
     /**
-     * Requête HTTP
-     * @var ?Request
+     * Pile de requêtes
+     * @var ?RequestStack
      */
-    private ?Request $request;
+    private RequestStack $requestStack;
 
     /**
      * Gestionnaire d'entité
@@ -50,14 +50,23 @@ final class DatabaseHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Modifie la requête HTTP
+     * Modifie la pile de requêtes HTTP
      * @param RequestStack $requestStack
      * @return void
      * @required
      */
-    public function setRequest(RequestStack $requestStack) : void
+    public function setRequestStack(RequestStack $requestStack) : void
     {
-        $this->request = $requestStack?->getCurrentRequest();
+        $this->requestStack = $requestStack;
+    }
+
+    /**
+     * Retourne la requête courante
+     * @return ?Request
+     */
+    private function getRequest() : ?Request
+    {
+        return $this->requestStack->getCurrentRequest();
     }
 
     /**
@@ -78,10 +87,15 @@ final class DatabaseHandler extends AbstractProcessingHandler
      */
     protected function write(array $record) : void
     {
+        $request = $this->getRequest();
+        
         $timezone = new \DateTimeZone('UTC');
+
+
         $datetime = $record['datetime']?->setTimezone($timezone) ?? new \DateTime(timezone: $timezone);
-        $userAgent = $this->request?->headers->get('User-Agent');
-        $uri = $this->request?->getRequestUri();
+        $userAgent = $request?->headers->get('User-Agent');
+
+        $uri = $request?->getRequestUri();
         $message = $record['message'] ?? '';
         $level = $record['level_name'] ?? LogLevel::ERROR;
         $siteName = $this->siteService->getName();

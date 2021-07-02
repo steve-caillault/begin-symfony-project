@@ -51,16 +51,16 @@ final class BreadcrumbTest extends BaseTestCase {
      */
     public function testWithFewElements() : void
     {
-        $itemTwoUrl = $this->getService(RouterInterface::class)->generate('testing_pagination', [
+        $itemTwoUrl = $this->getService(RouterInterface::class)->generate('testing_with_params', [
             'param1' => 'new-value-1',
         ], referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
 
         $breadcrumb = (new Breadcrumb())
             ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1'))
-            ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', 'testing_pagination', [
+            ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', 'testing_with_params', [
                 'param1' => 'new-value-1',
             ]))
-            ->addItem(new BreadcrumbItem('Label 3', 'Alt Label 3', 'testing_pagination', [
+            ->addItem(new BreadcrumbItem('Label 3', 'Alt Label 3', 'testing_with_params', [
                 'param1' => 'new-value-2',
             ]))
         ;
