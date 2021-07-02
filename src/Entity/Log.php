@@ -21,7 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
     ORM\Index(name: 'idx_message', columns: [ 'message' ], options: [ 'lengths' => [ 255 ] ]),
     ORM\Index(name: 'idx_user_agent', columns: [ 'user_agent' ])
 ]
-final class Log
+final class Log implements EntityInterface
 {
     /**
      * Identifiant
