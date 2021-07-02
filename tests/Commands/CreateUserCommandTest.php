@@ -12,9 +12,12 @@ use Symfony\Component\Console\Tester\CommandTester;
 /***/
 use App\Entity\User;
 use App\Tests\Commands\CommandTestCase;
+use App\Tests\WithUserGenerating;
 
 final class CreateUserCommandTest extends CommandTestCase
 {
+    use WithUserGenerating;
+
     // SUCCES DE LA CREATION
 
     /**
@@ -552,38 +555,5 @@ final class CreateUserCommandTest extends CommandTestCase
     }
 
     /*************************************************************************/
-
-    /**
-     * Génére un utilisateur sans le créer
-     * @param string $role
-     * @return \Generator
-     */
-    private function getGeneratingUser(string $role) : \Generator
-    {
-        $faker = $this->getFaker();
-
-        $data = [
-            'public_id' => $faker->slug($faker->numberBetween(1, 3)),
-            'first_name' => $faker->firstName(),
-            'last_name' => $faker->lastName(),
-            'test_password' => $faker->password(),
-            'role' => $role,
-        ];
-
-        $user = (new User())
-            ->setPublicId($data['public_id'])
-            ->setFirstName($data['first_name'])
-            ->setLastName($data['last_name'])
-            ->setTestPassword($data['test_password'])
-            ->addPermission($data['role'])
-        ;
-
-        $encoder = $this->getService(UserPasswordHasherInterface::class);
-        $passwordHashed = $encoder->hashPassword($user, $data['test_password']);
-        $user->setPasswordHashed($passwordHashed);
-
-        yield $data;
-        yield $user;
-    }
 
 }
