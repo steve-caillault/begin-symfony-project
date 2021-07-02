@@ -368,7 +368,7 @@ final class CreateUserCommandTest extends CommandTestCase
 
         $commandTester = $this->getCreateUserCommandTester($expectedUser);
        
-        $errorMessage = 'Le mot de passe doit avoir entre 3 et 50 caractètes.';
+        $errorMessage = 'Le mot de passe doit avoir entre 3 et 50 caractères.';
         $this->createUserErrorChecking($expectedUser, $commandTester, $errorMessage);
     }
 
@@ -386,7 +386,7 @@ final class CreateUserCommandTest extends CommandTestCase
 
         $commandTester = $this->getCreateUserCommandTester($expectedUser);
        
-        $errorMessage = 'Le mot de passe doit avoir entre 3 et 50 caractètes.';
+        $errorMessage = 'Le mot de passe doit avoir entre 3 et 50 caractères.';
         $this->createUserErrorChecking($expectedUser, $commandTester, $errorMessage);
     }
 
@@ -406,7 +406,7 @@ final class CreateUserCommandTest extends CommandTestCase
 
         $commandTester = $this->getCreateUserCommandTester($expectedUser);
        
-        $errorMessage = 'Le mot de passe doit avoir entre 3 et 50 caractètes.';
+        $errorMessage = 'Le mot de passe doit avoir entre 3 et 50 caractères.';
         $this->createUserErrorChecking($expectedUser, $commandTester, $errorMessage);
     }
 
