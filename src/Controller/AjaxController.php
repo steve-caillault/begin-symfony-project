@@ -20,15 +20,6 @@ abstract class AjaxController extends AbstractController {
         STATUS_ERROR = 'ERROR'
     ;
 
-    /**
-     * Données retournées par l'appel Ajax
-     * @var array
-     */
-    protected array $responseData = [
-        'status' => self::STATUS_ERROR,
-        'data' => null,
-    ];
-
     /**********************************************/
 
     /**
@@ -57,13 +48,11 @@ abstract class AjaxController extends AbstractController {
      */
     protected function getAjaxResponse(array $data, string $status = self::STATUS_ERROR) : JsonResponse
     {
-        $this->response_data = [
+        $statusCode = ($status === self::STATUS_SUCCESS) ? 200 : 400;
+        return new JsonResponse([
             'status' => $status,
             'data' => $data,
-        ];
-
-        $statusCode = ($status === self::STATUS_SUCCESS) ? 200 : 400;
-        return new JsonResponse($this->response_data, $statusCode);
+        ], $statusCode);
     }
 
     /**********************************************/

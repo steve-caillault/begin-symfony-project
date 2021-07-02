@@ -19,7 +19,6 @@ use Symfony\Component\Console\Input\{
     InputArgument 
 };
 use Symfony\Component\Console\Output\OutputInterface;
-use Psr\Log\LoggerInterface;
 
 final class MaintenanceCommand extends BaseCommand
 {
@@ -32,7 +31,7 @@ final class MaintenanceCommand extends BaseCommand
 
     /**
      * Constructeur
-     * @param LoggerInterface $logger
+     * @param ContainerBagInterface $configuration
      */
     public function __construct(private ContainerBagInterface $configuration)
     {
@@ -94,7 +93,7 @@ final class MaintenanceCommand extends BaseCommand
      * @param OutputInterface $output
      * @return int
      */
-    private function enableMaintenance(OutputInterface $output)
+    private function enableMaintenance(OutputInterface $output) : int
     {
         $filePath = $this->configuration->get('maintenanceFilePath');
         $alreadyEnabled = file_exists($filePath);
@@ -120,7 +119,7 @@ final class MaintenanceCommand extends BaseCommand
      * @param OutputInterface $output
      * @return int
      */
-    private function disableMaintenance(OutputInterface $output)
+    private function disableMaintenance(OutputInterface $output) : int
     {
         $filePath = $this->configuration->get('maintenanceFilePath');
         $alreadyDisabled = (! file_exists($filePath));

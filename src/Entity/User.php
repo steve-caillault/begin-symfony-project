@@ -30,8 +30,8 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      * @var int
      */
     #[
-        ORM\Id(),
-        ORM\GeneratedValue(),
+        ORM\Id,
+        ORM\GeneratedValue,
         ORM\Column(type: 'integer',  columnDefinition: 'SMALLINT(5) UNSIGNED AUTO_INCREMENT'),
     ]
     private int $id;
@@ -87,7 +87,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
 
     /**
      * Mot de passe non crypté (n'est utilisé que pour les tests)
-     * @var string
+     * @var ?string
      */
     private ?string $test_password = null;
 
@@ -126,7 +126,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
 
     /**
      * Retourne les rôles de l'utilisateur
-     * @return string[]
+     * @return array
      */
     public function getRoles()
     {
@@ -191,7 +191,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
 
     /**
      * Retourne l'identifiant public
-     * @return string
+     * @return ?string
      */
     public function getPublicId() : ?string
     {
@@ -294,7 +294,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      * @param string $password
      * @return self
      */
-    public function setTestPassword(string $password)
+    public function setTestPassword(string $password) : self
     {
         $this->test_password = $password;
         return $this;

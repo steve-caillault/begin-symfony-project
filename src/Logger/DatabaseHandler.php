@@ -28,7 +28,7 @@ final class DatabaseHandler extends AbstractProcessingHandler
 
     /**
      * Pile de requêtes
-     * @var ?RequestStack
+     * @var RequestStack
      */
     private RequestStack $requestStack;
 

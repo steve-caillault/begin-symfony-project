@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Classe abraite pour les commande
+ * Classe abstraite pour les commande
  */
 
 namespace App\Command;
@@ -34,6 +34,7 @@ abstract class BaseCommand extends Command
      * @param OutputInterface $output
      * @param string $message
      * @param int $status
+     * @return int
      */
     protected function exitWithMessage(OutputInterface $output, string $message, int $status) : int
     {

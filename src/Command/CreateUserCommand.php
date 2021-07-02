@@ -84,7 +84,7 @@ final class CreateUserCommand extends BaseCommand
         $passwordLength = strlen($userPassword);
         if($passwordLength < $minLengthPassword or $passwordLength > $maxLengthPassword)
         {
-            $message = strtr('Le mot de passe doit avoir entre :min et :max caractètes.', [
+            $message = strtr('Le mot de passe doit avoir entre :min et :max caractères.', [
                 ':min' => $minLengthPassword,
                 ':max' => $maxLengthPassword,
             ]);

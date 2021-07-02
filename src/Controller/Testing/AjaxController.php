@@ -9,7 +9,7 @@ namespace App\Controller\Testing;
 use App\Controller\AjaxController as BaseController;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 use Symfony\Component\HttpFoundation\{
-    Request,
+    Response,
     JsonResponse
 };
 use Symfony\Component\HttpKernel\Exception\{
@@ -24,7 +24,7 @@ final class AjaxController extends BaseController {
 
     /**
      * Page de test
-     * @return Response
+     * @return JsonResponse
      */
     #[
         RouteAnnotation(
@@ -43,7 +43,7 @@ final class AjaxController extends BaseController {
 
     /**
      * Page de test du panneau d'administration
-     * @return Response
+     * @return JsonResponse
      */
     #[
         RouteAnnotation(
@@ -69,14 +69,13 @@ final class AjaxController extends BaseController {
         RouteAnnotation(
             path: '/testing/error-{errorStatus}/ajax',
             name: 'testing_error_ajax',
+            requirements: [ 'errorStatus' => '[0-9]{3}' ],
             methods: [ 'GET' ],
-            condition: "'%kernel.environment%' === 'test'",
-            requirements: [ 'errorStatus' => '[0-9]{3}' ]
+            condition: "'%kernel.environment%' === 'test'"
         )
     ]
-    public function error(int $errorStatus) : JsonResponse
+    public function error(int $errorStatus) : Response
     {
-        
         $exception = match($errorStatus) {
             401 => new UnauthorizedHttpException(''),
             403 => new AccessDeniedHttpException(),
@@ -84,12 +83,9 @@ final class AjaxController extends BaseController {
             default => new HttpException(500)
         };
 
-        $response = $this->forward('App\Controller\ErrorController::index', [
+        return $this->forward('App\Controller\ErrorController::index', [
             'exception' => $exception,
         ]);
-
-        return $response;
-
     }
 
 }

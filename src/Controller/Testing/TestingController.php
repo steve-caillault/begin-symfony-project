@@ -15,10 +15,7 @@ use Symfony\Component\HttpKernel\Exception\{
     HttpException,
     
 };
-use Symfony\Component\HttpFoundation\{
-    Request,
-    Response
-};
+use Symfony\Component\HttpFoundation\Response;
 use Psr\Log\LoggerInterface;
 /***/
 use App\UI\Pagination\Pagination;
@@ -50,22 +47,20 @@ final class TestingController extends AbstractController {
         RouteAnnotation(
             path: 'testing/with-params/{param1}',
             name: 'testing_with_params',
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
             requirements: [
                 'param1' => '[^\/]+',
             ],
+            methods: [ 'GET' ],
+            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
         )
     ]
     public function testingWithParams() : Response
     {
-
         return new Response();
     }
 
     /**
      * Page de test de la pagination
-     * @param Request $request
      * @param string $paramType
      * @param string $paramName
      * @param int $itemsPerPage
@@ -76,22 +71,21 @@ final class TestingController extends AbstractController {
         RouteAnnotation(
             path: 'testing/pagination/{paramType}/{paramName}/{itemsPerPage}/{totalItems}/{customPage}',
             name: 'testing_pagination',
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
-            defaults: [
-                'customPage' => 1,
-            ],
-            requirements: [ 
+            requirements: [
                 'paramType' => 'query|route',
                 'paramName' => '[^\/]+',
                 'itemsPerPage' => '[0-9]+',
                 'totalItems' => '[0-9]+',
                 'customPage' => '[0-9]+',
             ],
+            defaults: [
+                'customPage' => 1,
+            ],
+            methods: [ 'GET' ],
+            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
         )
     ]
     public function testingPagination(
-        Request $request, 
         string $paramType, 
         string $paramName, 
         int $itemsPerPage,
@@ -134,9 +128,9 @@ final class TestingController extends AbstractController {
         RouteAnnotation(
             path: '/testing/error-{errorStatus}',
             name: 'testing_error',
+            requirements: [ 'errorStatus' => '[0-9]{3}' ],
             methods: [ 'GET' ],
-            condition: "'%kernel.environment%' === 'test'",
-            requirements: [ 'errorStatus' => '[0-9]{3}' ]
+            condition: "'%kernel.environment%' === 'test'"
         )
     ]
     public function error(int $errorStatus) : Response
@@ -149,12 +143,9 @@ final class TestingController extends AbstractController {
             default => new HttpException(500)
         };
 
-        $response = $this->forward('App\Controller\ErrorController::index', [
+        return $this->forward('App\Controller\ErrorController::index', [
             'exception' => $exception,
         ]);
-
-        return $response;
-
     }
 
     /**
@@ -167,9 +158,9 @@ final class TestingController extends AbstractController {
         RouteAnnotation(
             path: '/testing/log/{message}',
             name: 'testing_log',
+            requirements: [ 'message' => '[^\/]+' ],
             methods: [ 'GET' ],
-            condition: "'%kernel.environment%' === 'test'",
-            requirements: [ 'message' => '[^\/]+' ]
+            condition: "'%kernel.environment%' === 'test'"
         )
     ]
     public function log(LoggerInterface $logger, string $message) : Response

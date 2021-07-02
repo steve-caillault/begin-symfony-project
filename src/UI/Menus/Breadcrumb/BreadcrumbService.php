@@ -21,6 +21,7 @@ final class BreadcrumbService {
 
     /**
      * Retourne le rendu du fil d'ariane
+     * @param Breadcrumb $breadcrumb
      * @return ?string
      */
     public function getRender(Breadcrumb $breadcrumb) : ?string

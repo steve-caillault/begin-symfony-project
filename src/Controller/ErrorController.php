@@ -17,12 +17,6 @@ use App\SiteService;
 final class ErrorController extends BaseController
 {
     /**
-     * Code d'erreur à afficher
-     * @var int
-     */
-    private int $displayingStatusCode = 500;
-
-    /**
      * Page d'erreur
      * @param Request $request
      * @param \Throwable $exception
@@ -50,10 +44,10 @@ final class ErrorController extends BaseController
         // $errorMessage = $exception->getMessage();
 
         $allowedCodes = [ 401, 403, 404, 500, ];
-        $this->displayingStatusCode = $statusCode;
-		if(! in_array($this->displayingStatusCode, $allowedCodes))
+        $displayingStatusCode = $statusCode;
+		if(! in_array($displayingStatusCode, $allowedCodes))
 		{
-			$this->displayingStatusCode = 500;
+			$displayingStatusCode = 500;
 		}
 		
         $displayingMessage = match($statusCode) {
@@ -66,22 +60,20 @@ final class ErrorController extends BaseController
         // $displayingMessage = $errorMessage;
 
         $displayingData = [
-            'code' => $this->displayingStatusCode,
+            'code' => $displayingStatusCode,
             'message' => $displayingMessage,
         ];
 
         if($request->isXmlHttpRequest())
         {
             return new JsonResponse([
-                'status' => \App\Controller\AjaxController::STATUS_ERROR,
+                'status' => AjaxController::STATUS_ERROR,
                 'data' => $displayingData,
             ], $statusCode);
         }
 
         $content = $this->renderView('layout/error.html.twig', $displayingData);
-        $response = new Response($content, $statusCode);
-
-        return $response;
+        return new Response($content, $statusCode);
     }
 
 }

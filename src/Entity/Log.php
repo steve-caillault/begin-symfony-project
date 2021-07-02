@@ -28,8 +28,8 @@ final class Log implements EntityInterface
      * @var ?int
      */
     #[
-        ORM\Id(),
-        ORM\GeneratedValue(),
+        ORM\Id,
+        ORM\GeneratedValue,
         ORM\Column(type: 'integer', options: [ 'unsigned' => true ])
     ]
     private ?int $id = null;
@@ -128,7 +128,7 @@ final class Log implements EntityInterface
     }
 
     /**
-     * Moditfie le nom du site
+     * Modifie le nom du site
      * @param string $siteName
      * @return self
      */

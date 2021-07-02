@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Point d'entré de l'authentification du panneau d'administration
+ * Point d'entrée de l'authentification du panneau d'administration
  */
 
 namespace App\Security\Admin;

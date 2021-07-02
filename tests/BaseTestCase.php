@@ -29,13 +29,13 @@ abstract class BaseTestCase extends WebTestCase {
 
     /**
      * Entity Manager
-     * @var EntityManagerInterface
+     * @var ?EntityManagerInterface
      */
     private ?EntityManagerInterface $entityManager = null;
 
     /**
      * Objet Faker pour générer de fausse données
-     * @var FakerGenerator
+     * @var FakerGenerator|false
      */
     private FakerGenerator|false $faker = false;
 
@@ -89,7 +89,7 @@ abstract class BaseTestCase extends WebTestCase {
      */
     protected function getQueryBuilder(string $entityClass, string $tableAlias = 't') : QueryBuilder
     {
-        return (clone $this->getRepository($entityClass))->createQueryBuilder('t');
+        return (clone $this->getRepository($entityClass))->createQueryBuilder($tableAlias);
     }
 
     /**

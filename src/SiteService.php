@@ -70,7 +70,7 @@ final class SiteService {
 
     /**
      * Modifie si on se trouve sur une page d'erreur
-     * @param bool $error
+     * @param bool $withError
      * @return self
      */
     public function setWithError(bool $withError) : self
@@ -86,7 +86,7 @@ final class SiteService {
     public function isAdminSection() : bool
     {
         $routeName = $this->getRequest()?->attributes->get('_route');
-        return (strpos($routeName, 'admin_') !== false);
+        return (str_contains($routeName, 'admin_'));
     }
 
     /**
@@ -96,7 +96,7 @@ final class SiteService {
     public function isAuthSection() : bool
     {
         $routeName = $this->getRequest()?->attributes->get('_route');
-        return (strpos($routeName, '_auth_') !== false);
+        return (str_contains($routeName, '_auth_'));
     }
 
     /**
