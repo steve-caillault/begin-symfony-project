@@ -25,6 +25,9 @@ security:
             #    authenticators:
             #        - App\Security\Admin\Authenticator
 
+            logout:
+                path: admin_auth_logout
+
             form_login:
                 username_parameter: id
                 password_parameter: password

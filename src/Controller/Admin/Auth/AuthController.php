@@ -45,4 +45,20 @@ final class AuthController extends AdminController {
         ]);
     }
 
+    /**
+     * Déconnexion
+     * @return void
+     */
+    #[
+        RouteAnnotation(
+            path: '/admin/auth/logout',
+            name: 'admin_auth_logout',
+            methods: [ 'GET' ]
+        )
+    ]
+    public function logout() : void
+    {
+        // Gérée par Symfony
+    }
+
 }
