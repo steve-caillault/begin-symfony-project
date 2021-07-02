@@ -6,7 +6,6 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{ 
     Request, 
     JsonResponse, 
@@ -15,7 +14,7 @@ use Symfony\Component\HttpFoundation\{
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 use App\SiteService;
 
-class ErrorController extends AbstractController
+final class ErrorController extends BaseController
 {
     /**
      * Code d'erreur à afficher

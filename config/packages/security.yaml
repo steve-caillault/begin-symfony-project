@@ -1,6 +1,6 @@
 security:
     # https://symfony.com/doc/current/security/experimental_authenticators.html
-    enable_authenticator_manager: true
+    enable_authenticator_manager: false
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         app_user_provider: 
@@ -15,9 +15,31 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        main:
+        admin:
             lazy: true
+            pattern: ^/admin
             provider: app_user_provider
+            entry_point: App\Security\Admin\AuthenticationEntryPoint
+
+            #guard:
+            #    authenticators:
+            #        - App\Security\Admin\Authenticator
+
+            form_login:
+                username_parameter: id
+                password_parameter: password
+                login_path: admin_auth_login
+                check_path: admin_auth_login
+                csrf_token_generator: security.csrf.token_manager
+                default_target_path: admin_index
+                # always_use_default_target_path: true
+                # failure_path: login_failure_route_name
+
+            json_login:
+                check_path: admin_auth_login_ajax
+                username_path: id
+                password_path: password
+            
 
             remember_me:
                 secret: '%kernel.secret%'
