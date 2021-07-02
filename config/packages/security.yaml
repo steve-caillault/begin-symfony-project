@@ -1,6 +1,6 @@
 security:
     # https://symfony.com/doc/current/security/experimental_authenticators.html
-    enable_authenticator_manager: false
+    enable_authenticator_manager: true
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         app_user_provider: 
@@ -33,7 +33,8 @@ security:
                 password_parameter: password
                 login_path: admin_auth_login
                 check_path: admin_auth_login
-                csrf_token_generator: security.csrf.token_manager
+                enable_csrf: true
+                # csrf_token_generator: security.csrf.token_manager
                 default_target_path: admin_index
                 # always_use_default_target_path: true
                 # failure_path: login_failure_route_name
