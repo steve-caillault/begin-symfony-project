@@ -38,7 +38,7 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/, roles: PUBLIC_ACCESS }
 
-    encoders:
+    password_hashers:
         App\Entity\User:
             algorithm: 'argon2id'
 

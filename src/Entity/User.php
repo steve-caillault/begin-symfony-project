@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 /***/
 use App\Repository\UserRepository;
 
@@ -20,7 +21,7 @@ use App\Repository\UserRepository;
     ORM\UniqueConstraint(name: 'idx_public_id', columns: [ 'public_id' ]),
     UniqueEntity(fields: 'public_id', message: 'Un utilisateur utilise déjà cet identifiant.')
 ]
-final class User implements EntityInterface, UserInterface
+final class User implements EntityInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
     public const PERMISSION_ADMIN = 'ADMIN';
 
@@ -138,9 +139,9 @@ final class User implements EntityInterface, UserInterface
 
     /**
      * Retourne le mot de passe crypté de l'utilisateur
-     * @return string
+     * @return ?string
      */
-    public function getPassword()
+    public function getPassword() : ?string
     {
         return $this->getPasswordHashed();
     }
