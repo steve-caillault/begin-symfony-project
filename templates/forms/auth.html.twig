@@ -1,14 +1,13 @@
 <form class="login-form" method="post" data-ajax-url="{{ ajaxLoginUrl }}">
-
     <fieldset>
         <div class="form-input">
             <label for="id">Identifiant</label>
             <input type="text" value="{{ last_username }}" name="id" id="id" autocomplete="off" required autofocus />
-            {% if error %}
+            {%- if error -%}
             <p class="error">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
+                {{- error.messageKey|trans(error.messageData, 'security') -}}
             </p>
-            {% endif %}
+            {%- endif -%}
         </div>
         <div class="form-input">
             <label for="password">Mot de passe</label>
@@ -18,12 +17,8 @@
             <label for="remember_me">Resté connecté</label>
             <input type="checkbox" id="remember_me" name="remember_me" />
         </div>
-
-
     </fieldset>
-    
     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}" />
-
     <div class="form-input form-input-submit">
         <input type="submit" value="Envoyer" />
     </div>
