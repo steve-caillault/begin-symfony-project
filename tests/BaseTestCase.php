@@ -6,7 +6,10 @@
 
 namespace App\Tests;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\{
+    EntityManagerInterface,
+    QueryBuilder
+};
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Faker\{ 
@@ -60,6 +63,15 @@ abstract class BaseTestCase extends WebTestCase {
     }
 
     /**
+     * Retourne l'entity manager
+     * @return ?EntityManagerInterface
+     */
+    protected function getEntityManager() : ?EntityManagerInterface
+    {
+        return $this->entityManager;
+    }
+
+    /**
      * Retourne le repository de la classe en paramètre
      * @param string $class
      * @return EntityRepositoryInterface
@@ -67,6 +79,17 @@ abstract class BaseTestCase extends WebTestCase {
     protected function getRepository(string $class) : EntityRepositoryInterface
     {
         return $this->entityManager->getRepository($class);
+    }
+
+    /**
+     * Retourne un query builder pour la classe de l'entité en paramètre
+     * @param string $entityClass
+     * @param string $tableAlias
+     * @return QueryBuilder
+     */
+    protected function getQueryBuilder(string $entityClass, string $tableAlias = 't') : QueryBuilder
+    {
+        return (clone $this->getRepository($entityClass))->createQueryBuilder('t');
     }
 
     /**
@@ -94,7 +117,9 @@ abstract class BaseTestCase extends WebTestCase {
             ->getManager();
 
         // Pour pouvoir déterminer les requêtes à annuler dans static::tearDown()
-        $this->entityManager->getConnection()->beginTransaction();
+        // @todo Trouver une autre solution pour la remise à 0 : créer des problèmes lorsque l'on tente de vérifier
+        // que valeur créé dans le test existe.
+        // $this->entityManager->getConnection()->beginTransaction();
     }
 
     /**
@@ -104,7 +129,7 @@ abstract class BaseTestCase extends WebTestCase {
     {
         parent::tearDown();
 
-        $this->entityManager->getConnection()->rollback(); // Retour à l'état initial
+        // $this->entityManager->getConnection()->rollback(); // Retour à l'état initial
         $this->entityManager->close();
         $this->entityManager = null;
     }
