@@ -47,8 +47,8 @@ final class AuthenticationEntryPoint implements AuthenticationEntryPointInterfac
         if($request->isXmlHttpRequest())
         {
             return new JsonResponse([
+                'status' => \App\Controller\AjaxController::STATUS_ERROR,
                 'data' => [
-                    'status' => \App\Controller\AjaxController::STATUS_ERROR,
                     'login_url' => $loginUrl,
                 ],
             ], 401);
