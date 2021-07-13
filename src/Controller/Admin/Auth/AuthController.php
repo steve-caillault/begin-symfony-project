@@ -7,8 +7,12 @@
 namespace App\Controller\Admin\Auth;
 
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\{
+    Request, Response
+};
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
+
+use Symfony\Component\HttpFoundation\Cookie;
 /***/
 use App\Controller\Admin\AdminController;
 
@@ -26,7 +30,7 @@ final class AuthController extends AdminController {
             methods: [ 'GET', 'POST' ]
         )
     ]
-    public function login(AuthenticationUtils $authenticationUtils) : Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils) : Response
     {
         if($this->getUser() !== null)
         {
@@ -34,7 +38,7 @@ final class AuthController extends AdminController {
         }
 
         // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
+        $error = ($authenticationUtils->getLastAuthenticationError() !== null);
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();

@@ -1,2 +1,2 @@
-'Id could not be found.': 'Identifiant inconnu.'
-'Invalid credentials.': 'Les identifiants sont incorrects.'
+credentials:
+  invalid: Les identifiants sont incorrects.

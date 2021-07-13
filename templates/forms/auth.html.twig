@@ -5,7 +5,7 @@
             <input type="text" value="{{ last_username }}" name="id" id="id" autocomplete="off" required autofocus />
             {%- if error -%}
             <p class="error">
-                {{- error.messageKey|trans(error.messageData, 'security') -}}
+                {{- 'credentials.invalid' | trans([], 'security') -}}
             </p>
             {%- endif -%}
         </div>
