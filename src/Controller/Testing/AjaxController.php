@@ -20,7 +20,6 @@ use Symfony\Component\HttpKernel\Exception\{
     
 };
 
-
 final class AjaxController extends BaseController {
 
     /**

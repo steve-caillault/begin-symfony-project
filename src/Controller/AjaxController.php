@@ -49,7 +49,7 @@ abstract class AjaxController extends AbstractController {
     protected function getAjaxResponse(array $data, string $status = self::STATUS_ERROR) : JsonResponse
     {
         $statusCode = ($status === self::STATUS_SUCCESS) ? 200 : 400;
-        return new JsonResponse([
+        return $this->json([
             'status' => $status,
             'data' => $data,
         ], $statusCode);

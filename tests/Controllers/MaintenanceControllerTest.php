@@ -147,9 +147,10 @@ final class MaintenanceControllerTest extends BaseTestCase {
     public function testAdminAjaxEnabled() : void
     {
         $this->enableMaintenance();
-        $this->getHttpClient()->xmlHttpRequest('GET', '/testing/admin/ajax');
 
         $client = $this->getHttpClient();
+        $client->xmlHttpRequest('GET', '/testing/admin/ajax');
+
         $responseContent = $client->getResponse()->getContent();
 
         $expectedContent = json_encode([
