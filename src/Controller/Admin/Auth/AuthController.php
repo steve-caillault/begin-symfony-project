@@ -25,7 +25,7 @@ final class AuthController extends AdminController {
      */
     #[
         RouteAnnotation(
-            path: '/admin/auth/login',
+            path: '/auth/login',
             name: 'admin_auth_login',
             methods: [ 'GET', 'POST' ]
         )

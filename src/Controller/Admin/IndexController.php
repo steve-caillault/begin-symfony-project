@@ -17,7 +17,7 @@ final class IndexController extends AdminController {
      */
     #[
         RouteAnnotation(
-            path: '/admin',
+            path: '/',
             name: 'admin_index',
             methods: [ 'GET', 'POST' ]
         )

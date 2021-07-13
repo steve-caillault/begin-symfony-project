@@ -20,6 +20,7 @@ use Symfony\Component\HttpKernel\Exception\{
     
 };
 
+
 final class AjaxController extends BaseController {
 
     /**
@@ -28,10 +29,9 @@ final class AjaxController extends BaseController {
      */
     #[
         RouteAnnotation(
-            path: 'testing/ajax',
+            path: '/ajax',
             name: 'testing_ajax',
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]"
+            methods: [ 'GET' ]
         )
     ]
     public function index() : JsonResponse
@@ -47,10 +47,9 @@ final class AjaxController extends BaseController {
      */
     #[
         RouteAnnotation(
-            path: 'testing/admin/ajax',
+            path: '/admin/ajax',
             name: 'testing_admin_ajax',
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]"
+            methods: [ 'GET' ]
         )
     ]
     public function admin() : JsonResponse
@@ -67,11 +66,10 @@ final class AjaxController extends BaseController {
      */
     #[
         RouteAnnotation(
-            path: '/testing/error-{errorStatus}/ajax',
+            path: '/error-{errorStatus}/ajax',
             name: 'testing_error_ajax',
             requirements: [ 'errorStatus' => '[0-9]{3}' ],
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' === 'test'"
+            methods: [ 'GET' ]
         )
     ]
     public function error(int $errorStatus) : Response

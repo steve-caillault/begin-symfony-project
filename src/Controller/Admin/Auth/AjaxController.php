@@ -19,7 +19,7 @@ final class AjaxController extends BaseAjaxController {
      */
     #[
         RouteAnnotation(
-            path: '/admin/auth/login/ajax',
+            path: '/auth/login/ajax',
             name: 'admin_auth_login_ajax',
             methods: [ 'POST' ]
         )

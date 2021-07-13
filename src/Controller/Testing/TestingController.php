@@ -28,10 +28,8 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            path: 'testing',
             name: 'testing',
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]"
+            methods: [ 'GET' ]
         )
     ]
     public function index() : Response
@@ -45,13 +43,12 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            path: 'testing/with-params/{param1}',
+            path: '/with-params/{param1}',
             name: 'testing_with_params',
             requirements: [
                 'param1' => '[^\/]+',
             ],
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
+            methods: [ 'GET' ]
         )
     ]
     public function testingWithParams() : Response
@@ -69,7 +66,7 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            path: 'testing/pagination/{paramType}/{paramName}/{itemsPerPage}/{totalItems}/{customPage}',
+            path: '/pagination/{paramType}/{paramName}/{itemsPerPage}/{totalItems}/{customPage}',
             name: 'testing_pagination',
             requirements: [
                 'paramType' => 'query|route',
@@ -81,8 +78,7 @@ final class TestingController extends AbstractController {
             defaults: [
                 'customPage' => 1,
             ],
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]",
+            methods: [ 'GET' ]
         )
     ]
     public function testingPagination(
@@ -108,10 +104,9 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            path: 'testing/admin',
+            path: '/admin',
             name: 'testing_admin_index',
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' in [ 'dev', 'test' ]"
+            methods: [ 'GET' ]
         )
     ]
     public function testingAdmin() : Response
@@ -126,11 +121,10 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            path: '/testing/error-{errorStatus}',
+            path: '/error-{errorStatus}',
             name: 'testing_error',
             requirements: [ 'errorStatus' => '[0-9]{3}' ],
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' === 'test'"
+            methods: [ 'GET' ]
         )
     ]
     public function error(int $errorStatus) : Response
@@ -156,11 +150,10 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            path: '/testing/log/{message}',
+            path: '/log/{message}',
             name: 'testing_log',
             requirements: [ 'message' => '[^\/]+' ],
-            methods: [ 'GET' ],
-            condition: "'%kernel.environment%' === 'test'"
+            methods: [ 'GET' ]
         )
     ]
     public function log(LoggerInterface $logger, string $message) : Response

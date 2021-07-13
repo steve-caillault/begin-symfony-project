@@ -56,9 +56,9 @@ final class MaintenanceControllerTest extends BaseTestCase {
      */
     public function testDisabled() : void
     {
-        $this->getHttpClient()->request('GET', '/testing');
-
         $client = $this->getHttpClient();
+        $client->request('GET', '/testing/');
+
         $responseContent = $client->getResponse()->getContent();
        
         $this->assertResponseStatusCodeSame(200);

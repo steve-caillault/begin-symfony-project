@@ -216,7 +216,7 @@ final class ErrorControllerTest extends BaseTestCase {
     public function testWithoutError() : void
     {
         $client = $this->getHttpClient();
-        $this->getHttpClient()->request('GET', '/testing');
+        $this->getHttpClient()->request('GET', '/testing/');
 
         $responseContent = $client->getResponse()->getContent();
 
