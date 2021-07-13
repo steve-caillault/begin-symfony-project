@@ -46,6 +46,7 @@ security:
             
 
             remember_me:
+                name: 'ADMIN_REMEMBER_ME'
                 secret: '%kernel.secret%'
                 lifetime: 604800 # 1 week in seconds
                 path: /

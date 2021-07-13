@@ -89,7 +89,7 @@ abstract class BaseTestCase extends WebTestCase {
      */
     protected function getQueryBuilder(string $entityClass, string $tableAlias = 't') : QueryBuilder
     {
-        return (clone $this->getRepository($entityClass))->createQueryBuilder($tableAlias);
+        return ($this->getRepository($entityClass))->createQueryBuilder($tableAlias);
     }
 
     /**
