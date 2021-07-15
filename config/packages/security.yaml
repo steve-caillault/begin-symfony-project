@@ -26,21 +26,21 @@ security:
             #        - App\Security\Admin\Authenticator
 
             logout:
-                path: admin_auth_logout
+                path: app_admin_security_auth_logout
 
             form_login:
                 username_parameter: id
                 password_parameter: password
-                login_path: admin_auth_login
-                check_path: admin_auth_login
+                login_path: app_admin_security_auth_login
+                check_path: app_admin_security_auth_login
                 enable_csrf: true
                 # csrf_token_generator: security.csrf.token_manager
-                default_target_path: admin_index
+                default_target_path: app_admin_default_index
                 # always_use_default_target_path: true
                 # failure_path: login_failure_route_name
 
             json_login:
-                check_path: admin_auth_login_ajax
+                check_path: app_admin_security_ajax_login
                 username_path: id
                 password_path: password
             

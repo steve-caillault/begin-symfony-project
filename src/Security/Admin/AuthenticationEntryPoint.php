@@ -40,7 +40,7 @@ final class AuthenticationEntryPoint implements AuthenticationEntryPointInterfac
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $loginUrl = $this->urlGenerator->generate(
-            'admin_auth_login', 
+            'app_admin_security_auth_login', 
             referenceType: UrlGeneratorInterface::ABSOLUTE_URL
         );
 

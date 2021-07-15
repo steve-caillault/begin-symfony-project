@@ -22,7 +22,7 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
      */
     public function getAuthUri() : string
     {
-        return $this->getService(RouterInterface::class)->generate('admin_auth_login_ajax');
+        return $this->getService(RouterInterface::class)->generate('app_admin_security_ajax_login');
     }
 
     /**
@@ -130,7 +130,7 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
         $client->xmlHttpRequest('GET', '/admin/ajax');
 
         $loginUrl = $this->getService(RouterInterface::class)->generate(
-            'admin_auth_login', 
+            'app_admin_security_auth_login', 
             referenceType: UrlGeneratorInterface::ABSOLUTE_URL
         );
 

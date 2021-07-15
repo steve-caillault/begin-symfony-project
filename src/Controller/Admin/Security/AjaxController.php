@@ -4,7 +4,7 @@
  * Contrôleur d'authentification du panneau d'administration depuis un appel Ajax
  */
 
-namespace App\Controller\Admin\Auth;
+namespace App\Controller\Admin\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
@@ -20,7 +20,6 @@ final class AjaxController extends BaseAjaxController {
     #[
         RouteAnnotation(
             path: '/auth/login/ajax',
-            name: 'admin_auth_login_ajax',
             methods: [ 'POST' ]
         )
     ]

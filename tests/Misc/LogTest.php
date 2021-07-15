@@ -23,7 +23,7 @@ final class LogTest extends BaseTestCase {
         $message = $faker->text();
         $userAgent = $faker->userAgent();
 
-        $uri = $this->getService(RouterInterface::class)->generate('testing_log', [
+        $uri = $this->getService(RouterInterface::class)->generate('app_testing_default_log', [
             'message' => $message,
         ]);
 

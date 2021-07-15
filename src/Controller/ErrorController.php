@@ -23,8 +23,7 @@ final class ErrorController extends BaseController
      */
     #[
         RouteAnnotation(
-            path: '/error', 
-            name: 'error',
+            path: '/error',
             methods: [ "GET" ]
         )
     ]

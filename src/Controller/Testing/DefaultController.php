@@ -20,7 +20,7 @@ use Psr\Log\LoggerInterface;
 /***/
 use App\UI\Pagination\Pagination;
 
-final class TestingController extends AbstractController {
+final class DefaultController extends AbstractController {
 
     /**
      * Page de test
@@ -28,7 +28,6 @@ final class TestingController extends AbstractController {
      */
     #[
         RouteAnnotation(
-            name: 'testing',
             methods: [ 'GET' ]
         )
     ]
@@ -44,14 +43,13 @@ final class TestingController extends AbstractController {
     #[
         RouteAnnotation(
             path: '/with-params/{param1}',
-            name: 'testing_with_params',
             requirements: [
                 'param1' => '[^\/]+',
             ],
             methods: [ 'GET' ]
         )
     ]
-    public function testingWithParams() : Response
+    public function params() : Response
     {
         return new Response();
     }
@@ -67,7 +65,6 @@ final class TestingController extends AbstractController {
     #[
         RouteAnnotation(
             path: '/pagination/{paramType}/{paramName}/{itemsPerPage}/{totalItems}/{customPage}',
-            name: 'testing_pagination',
             requirements: [
                 'paramType' => 'query|route',
                 'paramName' => '[^\/]+',
@@ -81,7 +78,7 @@ final class TestingController extends AbstractController {
             methods: [ 'GET' ]
         )
     ]
-    public function testingPagination(
+    public function pagination(
         string $paramType, 
         string $paramName, 
         int $itemsPerPage,
@@ -105,11 +102,10 @@ final class TestingController extends AbstractController {
     #[
         RouteAnnotation(
             path: '/admin',
-            name: 'testing_admin_index',
             methods: [ 'GET' ]
         )
     ]
-    public function testingAdmin() : Response
+    public function admin() : Response
     {
         return new Response('admin');
     }
@@ -122,7 +118,6 @@ final class TestingController extends AbstractController {
     #[
         RouteAnnotation(
             path: '/error-{errorStatus}',
-            name: 'testing_error',
             requirements: [ 'errorStatus' => '[0-9]{3}' ],
             methods: [ 'GET' ]
         )
@@ -151,7 +146,6 @@ final class TestingController extends AbstractController {
     #[
         RouteAnnotation(
             path: '/log/{message}',
-            name: 'testing_log',
             requirements: [ 'message' => '[^\/]+' ],
             methods: [ 'GET' ]
         )

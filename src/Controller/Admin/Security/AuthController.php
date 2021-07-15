@@ -4,15 +4,11 @@
  * Contrôleur d'authentification du panneau d'administration
  */
 
-namespace App\Controller\Admin\Auth;
+namespace App\Controller\Admin\Security;
 
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\HttpFoundation\{
-    Request, Response
-};
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
-
-use Symfony\Component\HttpFoundation\Cookie;
 /***/
 use App\Controller\Admin\AdminController;
 
@@ -26,15 +22,14 @@ final class AuthController extends AdminController {
     #[
         RouteAnnotation(
             path: '/auth/login',
-            name: 'admin_auth_login',
             methods: [ 'GET', 'POST' ]
         )
     ]
-    public function login(Request $request, AuthenticationUtils $authenticationUtils) : Response
+    public function login(AuthenticationUtils $authenticationUtils) : Response
     {
         if($this->getUser() !== null)
         {
-            return $this->redirectToRoute('admin_index');
+            return $this->redirectToRoute('app_admin_default_index');
         }
 
         // get the login error if there is one
@@ -46,7 +41,7 @@ final class AuthController extends AdminController {
         $form = $this->renderView('forms/auth.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
-            'ajaxLoginUrl' => $this->generateUrl('admin_auth_login_ajax'),
+            'ajax_login_url' => $this->generateUrl('app_admin_security_ajax_login'),
         ]);
 
         return $this->render('admin/auth.html.twig', [
@@ -60,8 +55,7 @@ final class AuthController extends AdminController {
      */
     #[
         RouteAnnotation(
-            path: '/admin/auth/logout',
-            name: 'admin_auth_logout',
+            path: '/auth/logout',
             methods: [ 'GET' ]
         )
     ]

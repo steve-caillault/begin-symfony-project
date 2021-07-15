@@ -29,7 +29,6 @@ final class AjaxController extends BaseController {
     #[
         RouteAnnotation(
             path: '/ajax',
-            name: 'testing_ajax',
             methods: [ 'GET' ]
         )
     ]
@@ -47,7 +46,6 @@ final class AjaxController extends BaseController {
     #[
         RouteAnnotation(
             path: '/admin/ajax',
-            name: 'testing_admin_ajax',
             methods: [ 'GET' ]
         )
     ]
@@ -66,7 +64,6 @@ final class AjaxController extends BaseController {
     #[
         RouteAnnotation(
             path: '/error-{errorStatus}/ajax',
-            name: 'testing_error_ajax',
             requirements: [ 'errorStatus' => '[0-9]{3}' ],
             methods: [ 'GET' ]
         )

@@ -32,7 +32,7 @@ final class AuthAjaxSubscriber implements EventSubscriberInterface
 
         // On ne gére que l'appel Ajax à l'authentification
         $route = $request->attributes->get('_route');
-        if($route !== 'admin_auth_login_ajax')
+        if($route !== 'app_admin_security_ajax_login')
         {
             return;
         }

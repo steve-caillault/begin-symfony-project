@@ -9,7 +9,7 @@ namespace App\Controller\Admin;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 
-final class IndexController extends AdminController {
+final class DefaultController extends AdminController {
 
     /**
      * Index du panneau d'administration
@@ -18,7 +18,6 @@ final class IndexController extends AdminController {
     #[
         RouteAnnotation(
             path: '/',
-            name: 'admin_index',
             methods: [ 'GET', 'POST' ]
         )
     ]

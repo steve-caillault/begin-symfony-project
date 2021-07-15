@@ -26,7 +26,7 @@ final class BreadcrumbTest extends BaseTestCase {
     {
         $emptyBreadcrumb = new Breadcrumb();
         $oneElementBreadcrumbAnchor = (new Breadcrumb)
-            ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1', 'testing'))
+            ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1', 'app_testing_default_index'))
         ;
         $oneElementBreadcrumbText = (new Breadcrumb)
             ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1'))
@@ -51,16 +51,17 @@ final class BreadcrumbTest extends BaseTestCase {
      */
     public function testWithFewElements() : void
     {
-        $itemTwoUrl = $this->getService(RouterInterface::class)->generate('testing_with_params', [
+        $routeName = 'app_testing_default_params';
+        $itemTwoUrl = $this->getService(RouterInterface::class)->generate($routeName, [
             'param1' => 'new-value-1',
         ], referenceType: UrlGeneratorInterface::ABSOLUTE_URL);
 
         $breadcrumb = (new Breadcrumb())
             ->addItem(new BreadcrumbItem('Label 1', 'Alt Label 1'))
-            ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', 'testing_with_params', [
+            ->addItem(new BreadcrumbItem('Label 2', 'Alt Label 2', $routeName, [
                 'param1' => 'new-value-1',
             ]))
-            ->addItem(new BreadcrumbItem('Label 3', 'Alt Label 3', 'testing_with_params', [
+            ->addItem(new BreadcrumbItem('Label 3', 'Alt Label 3', $routeName, [
                 'param1' => 'new-value-2',
             ]))
         ;

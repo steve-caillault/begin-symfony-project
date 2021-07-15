@@ -2,7 +2,7 @@
 
 /**
  * Mise en maintenance et 
- * php bin/console maintenance on|off
+ * php bin/console maintenance true|false
  */
 
 namespace App\Command;

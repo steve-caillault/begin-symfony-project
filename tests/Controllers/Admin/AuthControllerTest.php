@@ -21,7 +21,7 @@ final class AuthControllerTest extends BaseTestCase implements AuthAttemptInterf
      */
     public function getAuthUri() : string
     {
-        return $this->getService(RouterInterface::class)->generate('admin_auth_login');
+        return $this->getService(RouterInterface::class)->generate('app_admin_security_auth_login');
     }
 
     /**

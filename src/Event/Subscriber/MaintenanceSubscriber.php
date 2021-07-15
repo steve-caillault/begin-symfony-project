@@ -37,7 +37,7 @@ final class MaintenanceSubscriber implements EventSubscriberInterface
 		
 		// Si on se trouve sur une page du panneau d'administration, on n'affiche pas la maintenance
 		$routeName = $request->attributes->get('_route');
-		$isAdminRoute = (str_contains($routeName, 'admin_'));
+		$isAdminRoute = (str_contains($routeName, '_admin'));
 		if($isAdminRoute)
 		{
 			return;

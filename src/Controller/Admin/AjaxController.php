@@ -20,7 +20,6 @@ final class AjaxController extends BaseAjaxController {
     #[
         RouteAnnotation(
             path: '/ajax',
-            name: 'admin_ajax_index',
             methods: [ 'GET' ]
         )
     ]

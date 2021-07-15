@@ -48,6 +48,8 @@ final class PaginationTest extends BaseTestCase {
 
         $client = $this->getHttpClient();
 
+        $routeName = 'app_testing_default_pagination';
+
         foreach($tests as $totalItems)
         {
             $totalPages = (int) ceil($totalItems / $itemsPerPage);
@@ -76,7 +78,7 @@ final class PaginationTest extends BaseTestCase {
                         'totalItems' => $totalItems,
                     ];
 
-                    $uri = $this->getService(RouterInterface::class)->generate('testing_pagination', $uriRouteParams);
+                    $uri = $this->getService(RouterInterface::class)->generate($routeName, $uriRouteParams);
 
 
                     $client->request('GET', $uri);
@@ -88,7 +90,7 @@ final class PaginationTest extends BaseTestCase {
                     $request = Request::create('testing/pagination')->duplicate(
                         query: $query,
                         attributes: array_merge($uriRouteParams, [
-                            '_route' => 'testing_pagination',
+                            '_route' => $routeName,
                         ])
                     );
 
@@ -145,6 +147,8 @@ final class PaginationTest extends BaseTestCase {
 
         $params = array_merge($query, $routeParams);
 
+        $routeName = 'app_testing_default_pagination';
+
         $pages = [];
         for($i = 1 ; $i <= $totalPages ; $i++)
         {
@@ -154,7 +158,7 @@ final class PaginationTest extends BaseTestCase {
             }
             else
             {
-                $label = $urlGenerator->generate('testing_pagination', array_merge($params, [
+                $label = $urlGenerator->generate($routeName, array_merge($params, [
                     $paramName => $i,
                 ]));
             }
