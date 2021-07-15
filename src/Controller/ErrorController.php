@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\{
     Response 
 };
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
-use App\SiteService;
 
 final class ErrorController extends BaseController
 {
@@ -20,7 +19,6 @@ final class ErrorController extends BaseController
      * Page d'erreur
      * @param Request $request
      * @param \Throwable $exception
-     * @param SiteService $siteService
      * @return Response
      */
     #[
@@ -33,13 +31,8 @@ final class ErrorController extends BaseController
     public function index(
         Request $request, 
         \Throwable $exception,
-        SiteService $siteService
     ) : Response
     {
-
-
-        $siteService->setWithError(true);
-
         $statusCode = (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : $exception->getCode();
         // $errorMessage = $exception->getMessage();
 
@@ -66,14 +59,14 @@ final class ErrorController extends BaseController
 
         if($request->isXmlHttpRequest())
         {
-            return new JsonResponse([
+            return $this->json([
                 'status' => AjaxController::STATUS_ERROR,
                 'data' => $displayingData,
             ], $statusCode);
         }
 
-        $content = $this->renderView('layout/error.html.twig', $displayingData);
-        return new Response($content, $statusCode);
+        return $this->render('layout/error.html.twig', $displayingData)
+            ->setStatusCode($statusCode);
     }
 
 }

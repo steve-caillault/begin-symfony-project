@@ -15,16 +15,15 @@ use Symfony\Component\HttpFoundation\{
 use Monolog\Handler\AbstractProcessingHandler;
 use Psr\Log\LogLevel;
 /***/
-use App\SiteService;
 use App\Entity\Log;
 
 final class DatabaseHandler extends AbstractProcessingHandler
 {
     /**
-     * Gestionnaire du site
-     * @var SiteService
+     * Nom du site
+     * @var string
      */
-    private SiteService $siteService;
+    private string $siteName;
 
     /**
      * Pile de requêtes
@@ -39,14 +38,14 @@ final class DatabaseHandler extends AbstractProcessingHandler
     private EntityManagerInterface $entityManager;
 
     /**
-     * Modifie le gestionnaire du site
-     * @param SiteService $siteService
+     * Affecte le nom du site
+     * @param string $siteName
      * @return void
      * @required
      */
-    public function setSite(SiteService $siteService) : void
+    public function setSIteName(string $siteName) : void
     {
-        $this->siteService = $siteService;
+        $this->siteName = $siteName;
     }
 
     /**
@@ -58,15 +57,6 @@ final class DatabaseHandler extends AbstractProcessingHandler
     public function setRequestStack(RequestStack $requestStack) : void
     {
         $this->requestStack = $requestStack;
-    }
-
-    /**
-     * Retourne la requête courante
-     * @return ?Request
-     */
-    private function getRequest() : ?Request
-    {
-        return $this->requestStack->getCurrentRequest();
     }
 
     /**
@@ -87,18 +77,17 @@ final class DatabaseHandler extends AbstractProcessingHandler
      */
     protected function write(array $record) : void
     {
-        $request = $this->getRequest();
+        $request = $this->requestStack->getCurrentRequest();
         
         $timezone = new \DateTimeZone('UTC');
-
-
         $datetime = $record['datetime']?->setTimezone($timezone) ?? new \DateTime(timezone: $timezone);
+
         $userAgent = $request?->headers->get('User-Agent');
 
         $uri = $request?->getRequestUri();
         $message = $record['message'] ?? '';
         $level = $record['level_name'] ?? LogLevel::ERROR;
-        $siteName = $this->siteService->getName();
+        $siteName = $this->siteName;
 
         $log = (new Log())
             ->setSiteName($siteName)
@@ -112,7 +101,7 @@ final class DatabaseHandler extends AbstractProcessingHandler
         try {
             $this->entityManager->persist($log);
             $this->entityManager->flush();
-        } catch(\Exception $e) {
+        } catch(\Exception) {
             
         }
        

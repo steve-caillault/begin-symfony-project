@@ -158,8 +158,6 @@ final class MaintenanceCommandTest extends CommandTestCase
     {
         $this->enableMaintenance();
 
-        $filePath = $this->getService(ContainerBagInterface::class)->get('maintenanceFilePath');
-
         $commandTester = $this->getMaintenanceCommandTester('false');
         $this->assertEquals(0, $commandTester->getStatusCode());
         $this->assertEquals('La maintenance a été désactivée.' . PHP_EOL, $commandTester->getDisplay());

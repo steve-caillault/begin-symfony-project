@@ -31,9 +31,9 @@ final class MaintenanceCommand extends BaseCommand
 
     /**
      * Constructeur
-     * @param ContainerBagInterface $configuration
+     * @param string $maintenanceFilePath Chemin d'accès au fichier de la maintenance
      */
-    public function __construct(private ContainerBagInterface $configuration)
+    public function __construct(private string $maintenanceFilePath)
     {
         parent::__construct(static::$defaultName);
     }
@@ -95,7 +95,7 @@ final class MaintenanceCommand extends BaseCommand
      */
     private function enableMaintenance(OutputInterface $output) : int
     {
-        $filePath = $this->configuration->get('maintenanceFilePath');
+        $filePath = $this->maintenanceFilePath;
         $alreadyEnabled = file_exists($filePath);
 
         if($alreadyEnabled)
@@ -121,7 +121,7 @@ final class MaintenanceCommand extends BaseCommand
      */
     private function disableMaintenance(OutputInterface $output) : int
     {
-        $filePath = $this->configuration->get('maintenanceFilePath');
+        $filePath = $this->maintenanceFilePath;
         $alreadyDisabled = (! file_exists($filePath));
 
         if($alreadyDisabled)
@@ -131,7 +131,6 @@ final class MaintenanceCommand extends BaseCommand
         }
         else
         {
-            
             unlink($filePath);
             $responseStatus = (! file_exists($filePath)) ? self::SUCCESS : self::FAILURE;
             $message = ($responseStatus === self::SUCCESS) ? 'La maintenance a été désactivée.' : 'La maintenance n\'a pas pu être désactivée.';
