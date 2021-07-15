@@ -14,6 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 /***/
 use App\Repository\UserRepository;
+use App\Validator\UserPermissions as UserPermissionsConstraint;
 
 #[
     ORM\Entity(repositoryClass: UserRepository::class),
@@ -109,6 +110,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
         ORM\Column(type: 'json', columnDefinition: 'VARCHAR(250) NULL DEFAULT NULL'),
         Constraints\NotBlank(message: "Les permissions sont nécessaires."),
         Constraints\NotNull(message: "Les permissions sont nécessaires."),
+        UserPermissionsConstraint()
     ]
     private array $permissions = [];
 
@@ -313,7 +315,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      * Retourne les permissions autorisées
      * @return array
      */
-    private function getAllowedPermissions() : array
+    public function getAllowedPermissions() : array
     {
         return [ self::PERMISSION_ADMIN, ];
     }
@@ -332,28 +334,6 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
             array_push($this->permissions, $permission);
         }
         return $this;
-    }
-
-    /**
-     * Validation des Permissions
-     * @param ExecutionContextInterface $context
-     * @return void
-     */
-    #[
-        Constraints\Callback()
-    ]
-    public function arePermissionsValid(ExecutionContextInterface $context) : void
-    {
-        $allowedPermissions = $this->getAllowedPermissions();
-
-        $forbiddenPermissions = array_filter($this->getPermissions(), fn($permission) => ! in_array($permission, $allowedPermissions));
-        if(count($forbiddenPermissions) === 0)
-        {
-            return;
-        }
-
-        $message = 'Les permissions de l\'utilisateur sont incorrectes.';
-        $context->buildViolation($message)->atPath('permissions')->addViolation();
     }
 
     /*******************************************************/
