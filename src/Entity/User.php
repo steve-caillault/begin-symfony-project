@@ -20,7 +20,7 @@ use App\Validator\UserPermissions as UserPermissionsConstraint;
     ORM\Entity(repositoryClass: UserRepository::class),
     ORM\Table(name: 'users'),
     ORM\UniqueConstraint(name: 'idx_public_id', columns: [ 'public_id' ]),
-    UniqueEntity(fields: 'public_id', message: 'Un utilisateur utilise déjà cet identifiant.')
+    UniqueEntity(fields: 'public_id', message: 'user.public_id.unique_entity')
 ]
 final class User implements EntityInterface, UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -43,13 +43,12 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      */
     #[
         ORM\Column(type: 'string', length: 50),
-        Constraints\NotBlank(message: "L'identifiant de l'utilisateur est nécessaire."),
+        Constraints\NotBlank(message: 'user.public_id.not_blank'),
         Constraints\Length(
             min: 3, 
             max: 50, 
-            minMessage: "L'identifiant doit avoir au moins {{ limit }} caractères.",
-            maxMessage: "L'identifiant ne doit pas avoir plus de {{ limit }} caractères."
-
+            minMessage: 'user.public_id.min',
+            maxMessage: 'user.public_id.max'
         )
     ]
     private string $public_id;
@@ -60,12 +59,12 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      */
     #[
         ORM\Column(type: 'string', length: 100),
-        Constraints\NotBlank(message: "Le prénom de l'utilisateur est nécessaire."),
+        Constraints\NotBlank(message: 'user.first_name.not_blank'),
         Constraints\Length(
             min: 3, 
             max: 100, 
-            minMessage: "Le prénom doit avoir au moins {{ limit }} caractères.",
-            maxMessage: "Le prénom ne doit pas avoir plus de {{ limit }} caractères."
+            minMessage: 'user.first_name.min',
+            maxMessage: 'user.first_name.max'
         )
     ]
     private string $first_name;
@@ -76,12 +75,12 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      */
     #[
         ORM\Column(type: 'string', length: 100),
-        Constraints\NotBlank(message: "Le nom de l'utilisateur est nécessaire."),
+        Constraints\NotBlank(message: 'user.last_name.not_blank'),
         Constraints\Length(
             min: 3, 
             max: 100, 
-            minMessage: "Le nom doit avoir au moins {{ limit }} caractères.",
-            maxMessage: "Le nom ne doit pas avoir plus de {{ limit }} caractères."
+            minMessage: 'user.last_name.min',
+            maxMessage: 'user.last_name.max'
         )
     ]
     private string $last_name;
@@ -108,8 +107,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      */
     #[
         ORM\Column(type: 'json', columnDefinition: 'VARCHAR(250) NULL DEFAULT NULL'),
-        Constraints\NotBlank(message: "Les permissions sont nécessaires."),
-        Constraints\NotNull(message: "Les permissions sont nécessaires."),
+        Constraints\NotBlank(message: 'user.permissions.not_blank'),
         UserPermissionsConstraint()
     ]
     private array $permissions = [];
