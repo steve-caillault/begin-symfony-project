@@ -33,7 +33,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
     #[
         ORM\Id,
         ORM\GeneratedValue,
-        ORM\Column(type: 'integer',  columnDefinition: 'SMALLINT(5) UNSIGNED AUTO_INCREMENT'),
+        ORM\Column(type: 'smallint', options: [ 'unsigned' => true ]),
     ]
     private int $id;
 
@@ -106,7 +106,7 @@ final class User implements EntityInterface, UserInterface, PasswordAuthenticate
      * @var array
      */
     #[
-        ORM\Column(type: 'json', columnDefinition: 'VARCHAR(250) NULL DEFAULT NULL'),
+        ORM\Column(type: 'json', nullable: false),
         Constraints\NotBlank(message: 'user.permissions.not_blank'),
         UserPermissionsConstraint()
     ]

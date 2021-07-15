@@ -75,7 +75,7 @@ final class Log implements EntityInterface
      * @var string
      */
     #[
-        ORM\Column(type: 'text', nullable: false, columnDefinition: 'TEXT NOT NULL')
+        ORM\Column(type: 'text', length: 10000, nullable: false)
     ]
     private string $message;
 
