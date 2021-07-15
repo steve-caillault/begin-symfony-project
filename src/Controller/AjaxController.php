@@ -7,11 +7,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\{
-    RequestStack,
-    JsonResponse
-};
-use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class AjaxController extends AbstractController {
 
@@ -21,24 +17,6 @@ abstract class AjaxController extends AbstractController {
     ;
 
     /**********************************************/
-
-    /**
-     * Vérifie s'il s'agit d'une requête Ajax
-     * @param RequestStack $requestStack
-     * @param KernelInterface $kernel
-     * @return void
-     * @required
-     */
-    public function checkAjaxRequest(RequestStack $requestStack, KernelInterface $kernel)
-    {
-        $environment = $kernel->getEnvironment();
-        $isAjax = $requestStack->getCurrentRequest()?->isXmlHttpRequest();
-
-        if($environment !== 'dev' and ! $isAjax)
-        {
-            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à accéder à cette page.');
-        }
-    }
 
     /**
      * Retourne la réponse JSON à retourner
