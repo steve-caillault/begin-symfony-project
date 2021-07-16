@@ -16,11 +16,12 @@ trait WithUserCreating {
     
     /**
      * Retourne un utilisateur à loguer
+     * @param string $permission Permission à utiliser
      * @return User
      */
-    private function userToLogged() : User
+    private function userToLogged(string $permission = User::PERMISSION_ADMIN) : User
     {
-        $generatorUser = $this->getGeneratingUser(User::PERMISSION_ADMIN);
+        $generatorUser = $this->getGeneratingUser($permission);
         $generatorUser->next();
         $user = $generatorUser->current();
 
