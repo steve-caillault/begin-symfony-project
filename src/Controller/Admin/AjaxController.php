@@ -6,12 +6,14 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\AjaxControllerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 /***/
 use App\Service\AjaxResponseService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class AjaxController extends AdminAjaxController {
+final class AjaxController extends AbstractController implements AjaxControllerInterface, AdminControllerInterface {
 
     /**
      * Appel Ajax du panneau d'administration

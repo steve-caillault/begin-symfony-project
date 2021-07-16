@@ -6,10 +6,11 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 
-final class DefaultController extends BaseController
+final class DefaultController extends AbstractController
 {
 
     /**

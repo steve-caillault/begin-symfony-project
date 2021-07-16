@@ -9,13 +9,9 @@ namespace App\Event\Subscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpFoundation\{
-	Response,
-	JsonResponse
-};
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /***/
-use App\Controller\BaseAjaxController;
+use App\Controller\AjaxControllerInterface;
 
 final class AjaxSubscriber implements EventSubscriberInterface
 {
@@ -40,8 +36,8 @@ final class AjaxSubscriber implements EventSubscriberInterface
         $controllerData = explode('::', $controllerParam);
         $controllerClassName = $controllerData[0] ?? null;
 
-        // On ne s'interesse qu'aux contrôleurs étendant BaseAjaxController
-        if(! class_exists($controllerClassName) or ! is_subclass_of($controllerClassName, BaseAjaxController::class))
+        // On ne s'interesse qu'aux contrôleurs implémentant AjaxControllerInterface
+        if(! class_exists($controllerClassName) or ! is_subclass_of($controllerClassName, AjaxControllerInterface::class))
         {
             return;
         }

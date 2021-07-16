@@ -6,6 +6,7 @@
 
 namespace App\Controller\Testing;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\{
@@ -16,9 +17,9 @@ use Symfony\Component\HttpKernel\Exception\{
     
 };
 /***/
-use App\Controller\BaseAjaxController;
+use App\Controller\AjaxControllerInterface;
 
-final class AjaxController extends BaseAjaxController {
+final class AjaxController extends AbstractController implements AjaxControllerInterface {
 
     /**
      * Page de test d'erreur

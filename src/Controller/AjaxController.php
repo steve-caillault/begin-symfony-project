@@ -6,12 +6,13 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 /***/
 use App\Service\AjaxResponseService;
 
-final class AjaxController extends BaseAjaxController
+final class AjaxController extends AbstractController implements AjaxControllerInterface
 {
 
     /**

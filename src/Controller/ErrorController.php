@@ -6,6 +6,7 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\{ 
     Request,
@@ -15,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 /***/
 use App\Service\AjaxResponseService;
 
-final class ErrorController extends BaseController
+final class ErrorController extends AbstractController
 {
     /**
      * Page d'erreur

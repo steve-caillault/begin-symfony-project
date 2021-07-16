@@ -6,13 +6,15 @@
 
 namespace App\Controller\Admin\Security;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 /***/
-use App\Controller\Admin\AdminAjaxController;
+use App\Controller\Admin\AdminControllerInterface;
+use App\Controller\AjaxControllerInterface;
 use App\Service\AjaxResponseService;
 
-final class AjaxController extends AdminAjaxController {
+final class AjaxController extends AbstractController implements AjaxControllerInterface, AdminControllerInterface {
 
     /**
      * Connexion en Ajax
