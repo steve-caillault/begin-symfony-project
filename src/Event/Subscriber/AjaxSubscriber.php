@@ -51,7 +51,7 @@ final class AjaxSubscriber implements EventSubscriberInterface
 
         if($environment !== 'dev' and ! $isAjax)
         {
-            throw new AccessDeniedException('Vous n\'êtes pas autorisé à accéder à cette page.');
+            throw new AccessDeniedException('errors.denied');
         }
 	}
 	

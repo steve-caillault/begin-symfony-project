@@ -6,9 +6,9 @@
 
 namespace App\Controller;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\HttpFoundation\{ 
-    Request, 
-    JsonResponse, 
+    Request,
     Response 
 };
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
@@ -19,6 +19,7 @@ final class ErrorController extends BaseController
      * Page d'erreur
      * @param Request $request
      * @param \Throwable $exception
+     * @param TranslatorInterface $translator
      * @return Response
      */
     #[
@@ -30,6 +31,7 @@ final class ErrorController extends BaseController
     public function index(
         Request $request, 
         \Throwable $exception,
+        TranslatorInterface $translator
     ) : Response
     {
         $statusCode = (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : $exception->getCode();
@@ -41,19 +43,19 @@ final class ErrorController extends BaseController
 		{
 			$displayingStatusCode = 500;
 		}
-		
+        
         $displayingMessage = match($statusCode) {
-            401 => 'Vous devez être identifié pour accéder à cette page.',
-            403 => 'Vous n\'êtes pas autorisé à accéder à cette page.',
-            404 => 'Cette page n\'existe pas ou a été déplacé.',
-            default => 'Une erreur s\'est produite.',
+            401 => 'errors.unauthorized',
+            403 => 'errors.denied',
+            404 => 'errors.not_found',
+            default => 'errors.default',
         };
 
         // $displayingMessage = $errorMessage;
 
         $displayingData = [
             'code' => $displayingStatusCode,
-            'message' => $displayingMessage,
+            'message' => $translator->trans($displayingMessage),
         ];
 
         if($request->isXmlHttpRequest())
