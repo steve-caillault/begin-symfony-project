@@ -8,12 +8,15 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
+/***/
+use App\Service\AjaxResponseService;
 
 final class AjaxController extends BaseAjaxController
 {
 
     /**
      * Appel par défaut
+     * @param AjaxResponseService $ajaxResponseService
      * @return Response
      */
     #[
@@ -21,10 +24,10 @@ final class AjaxController extends BaseAjaxController
             path: '/ajax'
         )
     ]
-    public function index() : Response
+    public function index(AjaxResponseService $ajaxResponseService) : Response
     {
-        return $this->getAjaxResponse([
+        return $ajaxResponseService->getFormatting([
             'success' => true,
-        ], self::STATUS_SUCCESS);
+        ], AjaxResponseService::STATUS_SUCCESS);
     }
 }

@@ -6,12 +6,8 @@
 
 namespace App\Controller\Testing;
 
-use App\Controller\BaseAjaxController;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
-use Symfony\Component\HttpFoundation\{
-    Response,
-    JsonResponse
-};
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\{
     UnauthorizedHttpException,
     AccessDeniedHttpException,
@@ -19,13 +15,15 @@ use Symfony\Component\HttpKernel\Exception\{
     HttpException,
     
 };
+/***/
+use App\Controller\BaseAjaxController;
 
 final class AjaxController extends BaseAjaxController {
 
     /**
      * Page de test d'erreur
      * @param int $errorStatus
-     * @return Response
+     * @return JsonResponse
      */
     #[
         RouteAnnotation(
@@ -34,7 +32,7 @@ final class AjaxController extends BaseAjaxController {
             methods: [ 'GET' ]
         )
     ]
-    public function error(int $errorStatus) : Response
+    public function error(int $errorStatus) : JsonResponse
     {
         $exception = match($errorStatus) {
             401 => new UnauthorizedHttpException(''),

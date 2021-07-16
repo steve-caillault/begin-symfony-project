@@ -8,11 +8,14 @@ namespace App\Controller\Admin;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
+/***/
+use App\Service\AjaxResponseService;
 
 final class AjaxController extends AdminAjaxController {
 
     /**
      * Appel Ajax du panneau d'administration
+     * @param AjaxResponseService $responseService
      * @return Response
      */
     #[
@@ -21,11 +24,11 @@ final class AjaxController extends AdminAjaxController {
             methods: [ 'GET' ]
         )
     ]
-    public function index() : JsonResponse
+    public function index(AjaxResponseService $responseService) : JsonResponse
     {
-        return $this->getAjaxResponse([
+        return $responseService->getFormatting([
             'success' => true,
-        ], self::STATUS_SUCCESS);
+        ], AjaxResponseService::STATUS_SUCCESS);
     }
 
 }

@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\{
     Response 
 };
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
+/***/
+use App\Service\AjaxResponseService;
 
 final class ErrorController extends BaseController
 {
@@ -20,6 +22,7 @@ final class ErrorController extends BaseController
      * @param Request $request
      * @param \Throwable $exception
      * @param TranslatorInterface $translator
+     * @param AjaxResponseService $ajaxResponseService
      * @return Response
      */
     #[
@@ -31,7 +34,8 @@ final class ErrorController extends BaseController
     public function index(
         Request $request, 
         \Throwable $exception,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        AjaxResponseService $ajaxResponseService
     ) : Response
     {
         $statusCode = (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : $exception->getCode();
@@ -60,10 +64,11 @@ final class ErrorController extends BaseController
 
         if($request->isXmlHttpRequest())
         {
-            return $this->json([
-                'status' => AjaxController::STATUS_ERROR,
-                'data' => $displayingData,
-            ], $statusCode);
+            return $ajaxResponseService->getFormatting(
+                $displayingData, 
+                AjaxResponseService::STATUS_ERROR, 
+                statusCode: $statusCode
+            );
         }
 
         return $this->render('layout/error.html.twig', $displayingData)

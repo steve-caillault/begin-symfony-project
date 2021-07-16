@@ -14,14 +14,33 @@ use Symfony\Component\HttpFoundation\{
     JsonResponse, 
     RedirectResponse 
 };
+/***/
+use App\Service\AjaxResponseService;
 
 final class AuthenticationEntryPoint implements AuthenticationEntryPointInterface {
+
+    /**
+     * Service de formatage d'une réponse Ajax
+     * @var AjaxResponseService
+     */
+    private AjaxResponseService $ajaxResponseService;
 
     /**
      * Générateur d'url
      * @var UrlGeneratorInterface
      */
     private UrlGeneratorInterface $urlGenerator;
+
+    /**
+     * Affecte le service de formatage de la réponse Ajax
+     * @param AjaxResponseService $ajaxResponseService
+     * @return void
+     * @required
+     */
+    public function setAjaxResponseService(AjaxResponseService $ajaxResponseService) : void
+    {
+        $this->ajaxResponseService = $ajaxResponseService;
+    }
 
     /**
      * Modifie le générateur d'URL
@@ -46,12 +65,9 @@ final class AuthenticationEntryPoint implements AuthenticationEntryPointInterfac
 
         if($request->isXmlHttpRequest())
         {
-            return new JsonResponse([
-                'status' => \App\Controller\AjaxController::STATUS_ERROR,
-                'data' => [
-                    'login_url' => $loginUrl,
-                ],
-            ], 401);
+            return $this->ajaxResponseService->getFormatting([
+                'login_url' => $loginUrl,
+            ], AjaxResponseService::STATUS_ERROR, statusCode: 401);
         }
         else
         {

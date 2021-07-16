@@ -10,11 +10,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 /***/
 use App\Controller\Admin\AdminAjaxController;
+use App\Service\AjaxResponseService;
 
 final class AjaxController extends AdminAjaxController {
 
     /**
      * Connexion en Ajax
+     * @param AjaxResponseService $responseService
      * @return JsonResponse
      */
     #[
@@ -23,13 +25,13 @@ final class AjaxController extends AdminAjaxController {
             methods: [ 'POST' ]
         )
     ]
-    public function login() : JsonResponse
+    public function login(AjaxResponseService $responseService) : JsonResponse
     {
         $logged = ($this->getUser()?->getId() !== null);
 
-        $responseStatus = ($logged) ? self::STATUS_SUCCESS : self::STATUS_ERROR;
+        $responseStatus = ($logged) ? AjaxResponseService::STATUS_SUCCESS : AjaxResponseService::STATUS_ERROR;
 
-        return $this->getAjaxResponse([
+        return $responseService->getFormatting([
             'logged' => $logged,
         ], $responseStatus);
     }

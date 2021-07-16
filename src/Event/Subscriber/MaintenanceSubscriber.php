@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\{
 };
 /***/
 use App\Controller\Admin\AdminControllerInterface;
+use App\Service\AjaxResponseService;
 
 final class MaintenanceSubscriber implements EventSubscriberInterface
 {
@@ -22,8 +23,13 @@ final class MaintenanceSubscriber implements EventSubscriberInterface
 	 * Constructeur
 	 * @param Twig $twig
 	 * @param string $maintenanceFilePath Chemin d'accès au fichier de la maintenance
+	 * @param AjaxResponseService $ajaxResponseService
 	 */
-	public function __construct(private Twig $twig, private string $maintenanceFilePath)
+	public function __construct(
+		private Twig $twig, 
+		private string $maintenanceFilePath,
+		private AjaxResponseService $ajaxResponseService
+	)
 	{
 		
 	}
@@ -57,12 +63,9 @@ final class MaintenanceSubscriber implements EventSubscriberInterface
         $isAjax = $request->isXmlHttpRequest();
         if($isAjax)
         {
-            $response = new JsonResponse([
-                'status' => \App\Controller\AjaxController::STATUS_ERROR,
-                'data' => [
-                    'maintenance' => true,
-                ],
-            ], $responseCode);
+            $response = $this->ajaxResponseService->getFormatting([
+                'maintenance' => true,
+			], AjaxResponseService::STATUS_ERROR, statusCode: $responseCode);
         }
         else
         {

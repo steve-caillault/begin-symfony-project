@@ -9,14 +9,20 @@ namespace App\Event\Subscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Contracts\Translation\TranslatorInterface;
+/***/
+use App\Service\AjaxResponseService;
 
 final class AuthAjaxSubscriber implements EventSubscriberInterface
 {
     /**
      * Constructeur
      * @param TranslatorInterface $translator
+     * @param AjaxResponseService $ajaxRequestService
      */
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(
+        private TranslatorInterface $translator,
+        private AjaxResponseService $ajaxResponseService
+    )
     {
 
     }
@@ -44,12 +50,14 @@ final class AuthAjaxSubscriber implements EventSubscriberInterface
         }
 
         // Modifie la réponse avec notre formatage
-        $response->setContent(json_encode([
-            'status' => \App\Controller\AjaxController::STATUS_ERROR,
-            'data' => [
-                'error' => $this->translator->trans('credentials.invalid', domain: 'security'),
-            ]
-        ]));
+        $responseAjax = $this->ajaxResponseService->getFormatting([
+            'error' => $this->translator->trans('credentials.invalid', domain: 'security'),
+        ], AjaxResponseService::STATUS_ERROR, statusCode: 401);
+
+        $response
+            ->setContent($responseAjax->getContent())
+            ->setStatusCode($responseAjax->getStatusCode())
+        ;
     }
 
     /**
