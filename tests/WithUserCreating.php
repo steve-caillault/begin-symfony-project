@@ -4,12 +4,11 @@
  * Trait pour la création d'utilisateur
  */
 
-namespace App\Tests\Controllers\Admin;
+namespace App\Tests;
 
 use Psr\Log\LoggerInterface;
 /***/
 use App\Entity\User;
-use App\Tests\WithUserGenerating;
 
 trait WithUserCreating {
 

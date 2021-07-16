@@ -17,7 +17,7 @@ final class AjaxControllerTest extends BaseTestCase {
     public function testAjax() : void
     {
         $client = $this->getHttpClient();
-        $client->xmlHttpRequest('GET', '/testing/ajax');
+        $client->xmlHttpRequest('GET', '/ajax');
        
         $responseContent = $client->getResponse()->getContent();
 
@@ -39,7 +39,7 @@ final class AjaxControllerTest extends BaseTestCase {
     public function testWithoutAjax() : void
     {
         $client = $this->getHttpClient();
-        $response = $client->request('GET', '/testing/ajax');
+        $response = $client->request('GET', '/ajax');
 
         $messageExpected = 'Vous n\'êtes pas autorisé à accéder à cette page.';
         $message = $response->filter('p')->first()->text();

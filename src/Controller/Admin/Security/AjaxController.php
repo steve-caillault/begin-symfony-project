@@ -9,9 +9,9 @@ namespace App\Controller\Admin\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 /***/
-use App\Controller\AjaxController as BaseAjaxController;
+use App\Controller\Admin\AdminAjaxController;
 
-final class AjaxController extends BaseAjaxController {
+final class AjaxController extends AdminAjaxController {
 
     /**
      * Connexion en Ajax

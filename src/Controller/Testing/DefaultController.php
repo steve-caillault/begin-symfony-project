@@ -23,20 +23,6 @@ use App\UI\Pagination\Pagination;
 final class DefaultController extends AbstractController {
 
     /**
-     * Page de test
-     * @return Response
-     */
-    #[
-        RouteAnnotation(
-            methods: [ 'GET' ]
-        )
-    ]
-    public function index() : Response
-    {
-        return new Response('Testing Page');
-    }
-
-    /**
      * Page de tests avec des paramètres dans la route
      * @return Response
      */
@@ -93,21 +79,6 @@ final class DefaultController extends AbstractController {
         return $this->render('testing/ui/pagination.html.twig', [
             'pagination' => $pagination,
         ]);
-    }
-
-    /**
-     * Page de test de l'administration
-     * @return Response
-     */
-    #[
-        RouteAnnotation(
-            path: '/admin',
-            methods: [ 'GET' ]
-        )
-    ]
-    public function admin() : Response
-    {
-        return new Response('admin');
     }
 
     /**

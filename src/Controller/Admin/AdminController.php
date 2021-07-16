@@ -8,6 +8,6 @@ namespace App\Controller\Admin;
 
 use App\Controller\BaseController;
 
-abstract class AdminController extends BaseController {
+abstract class AdminController extends BaseController implements AdminControllerInterface {
 
 }

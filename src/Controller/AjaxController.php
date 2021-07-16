@@ -1,38 +1,30 @@
 <?php
 
 /**
- * Contrôleur de base pour les appels Ajax
+ * Contrôleur d'Ajax
  */
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 
-abstract class AjaxController extends AbstractController {
-
-    public const
-        STATUS_SUCCESS = 'SUCCESS',
-        STATUS_ERROR = 'ERROR'
-    ;
-
-    /**********************************************/
+final class AjaxController extends BaseAjaxController
+{
 
     /**
-     * Retourne la réponse JSON à retourner
-     * @param array $data
-     * @param string $status
-     * @return JsonResponse
+     * Appel par défaut
+     * @return Response
      */
-    protected function getAjaxResponse(array $data, string $status = self::STATUS_ERROR) : JsonResponse
+    #[
+        RouteAnnotation(
+            path: '/ajax'
+        )
+    ]
+    public function index() : Response
     {
-        $statusCode = ($status === self::STATUS_SUCCESS) ? 200 : 400;
-        return $this->json([
-            'status' => $status,
-            'data' => $data,
-        ], $statusCode);
+        return $this->getAjaxResponse([
+            'success' => true,
+        ], self::STATUS_SUCCESS);
     }
-
-    /**********************************************/
-
 }

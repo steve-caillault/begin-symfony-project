@@ -6,11 +6,12 @@
 
 namespace App\Tests\Controllers\Admin;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\DomCrawler\Crawler;
 /***/
 use App\Tests\BaseTestCase;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Tests\WithUserCreating;
 
 final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptInterface {
 

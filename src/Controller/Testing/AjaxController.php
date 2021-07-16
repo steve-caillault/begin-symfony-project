@@ -6,7 +6,7 @@
 
 namespace App\Controller\Testing;
 
-use App\Controller\AjaxController as BaseController;
+use App\Controller\BaseAjaxController;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
 use Symfony\Component\HttpFoundation\{
     Response,
@@ -20,41 +20,7 @@ use Symfony\Component\HttpKernel\Exception\{
     
 };
 
-final class AjaxController extends BaseController {
-
-    /**
-     * Page de test
-     * @return JsonResponse
-     */
-    #[
-        RouteAnnotation(
-            path: '/ajax',
-            methods: [ 'GET' ]
-        )
-    ]
-    public function index() : JsonResponse
-    {
-        return $this->getAjaxResponse([
-            'success' => true,
-        ], self::STATUS_SUCCESS);
-    }
-
-    /**
-     * Page de test du panneau d'administration
-     * @return JsonResponse
-     */
-    #[
-        RouteAnnotation(
-            path: '/admin/ajax',
-            methods: [ 'GET' ]
-        )
-    ]
-    public function admin() : JsonResponse
-    {
-        return $this->getAjaxResponse([
-            'admin' => true,
-        ], self::STATUS_SUCCESS);
-    }
+final class AjaxController extends BaseAjaxController {
 
     /**
      * Page de test d'erreur

@@ -10,6 +10,7 @@ use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Routing\RouterInterface;
 /***/
 use App\Tests\BaseTestCase;
+use App\Tests\WithUserCreating;
 
 final class AuthControllerTest extends BaseTestCase implements AuthAttemptInterface {
 

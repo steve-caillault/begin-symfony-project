@@ -7,11 +7,14 @@
 namespace App\Tests\Controllers;
 
 use App\Tests\BaseTestCase;
-use App\Tests\WithMaintenanceTrait;
+use App\Tests\{
+    WithMaintenanceTrait,
+    WithUserCreating
+};
 
 final class MaintenanceControllerTest extends BaseTestCase {
     
-    use WithMaintenanceTrait;
+    use WithMaintenanceTrait, WithUserCreating;
 
     /**
      * Setup
@@ -39,7 +42,7 @@ final class MaintenanceControllerTest extends BaseTestCase {
     public function testEnabled() : void
     {
         $this->enableMaintenance();
-        $response = $this->getHttpClient()->request('GET', '/testing');
+        $response = $this->getHttpClient()->request('GET', '/');
 
         $message = $response->filter('p')->first()->text();
         $expectedMessage = 'Le site est actuellement en maintenance. Vous pourrez rafraîchir cette page dans quelques minutes.';
@@ -57,7 +60,7 @@ final class MaintenanceControllerTest extends BaseTestCase {
     public function testDisabled() : void
     {
         $client = $this->getHttpClient();
-        $client->request('GET', '/testing/');
+        $client->request('GET', '/');
 
         $responseContent = $client->getResponse()->getContent();
        
@@ -74,7 +77,7 @@ final class MaintenanceControllerTest extends BaseTestCase {
         $this->enableMaintenance();
 
         $client = $this->getHttpClient();
-        $client->xmlHttpRequest('GET', '/testing/ajax');
+        $client->xmlHttpRequest('GET', '/ajax');
        
         $responseContent = $client->getResponse()->getContent();
         $expectedContent = json_encode([
@@ -95,7 +98,7 @@ final class MaintenanceControllerTest extends BaseTestCase {
     public function testDisabledWithAjaxCalling() : void
     {
         $client = $this->getHttpClient();
-        $client->xmlHttpRequest('GET', '/testing/ajax');
+        $client->xmlHttpRequest('GET', '/ajax');
        
         $responseContent = $client->getResponse()->getContent();
         $expectedContent = json_encode([
@@ -115,10 +118,16 @@ final class MaintenanceControllerTest extends BaseTestCase {
      */
     public function testAdminEnabled() : void
     {
+        $user = $this->userToLogged();
+
         $this->enableMaintenance();
-        $this->getHttpClient()->request('GET', '/testing/admin');
 
         $client = $this->getHttpClient();
+        $client->loginUser($user, 'admin');
+
+        $client->followRedirects();
+        $client->request('GET', '/admin/');
+
         $responseContent = $client->getResponse()->getContent();
 
         $this->assertResponseStatusCodeSame(200);
@@ -131,9 +140,12 @@ final class MaintenanceControllerTest extends BaseTestCase {
      */
     public function testAdminDisabled() : void
     {
-        $this->getHttpClient()->request('GET', '/testing/admin');
+        $user = $this->userToLogged();
 
         $client = $this->getHttpClient();
+        $client->loginUser($user, 'admin');
+        $client->followRedirects();
+        $client->request('GET', '/admin/');
         $responseContent = $client->getResponse()->getContent();
 
         $this->assertResponseStatusCodeSame(200);
@@ -146,17 +158,20 @@ final class MaintenanceControllerTest extends BaseTestCase {
      */
     public function testAdminAjaxEnabled() : void
     {
+        $user = $this->userToLogged();
+
         $this->enableMaintenance();
 
         $client = $this->getHttpClient();
-        $client->xmlHttpRequest('GET', '/testing/admin/ajax');
+        $client->loginUser($user, 'admin');
+        $client->xmlHttpRequest('GET', '/admin/ajax');
 
         $responseContent = $client->getResponse()->getContent();
 
         $expectedContent = json_encode([
             'status' => 'SUCCESS',
             'data' => [
-                'admin' => true,
+                'success' => true,
             ],
         ]);
 
@@ -170,15 +185,17 @@ final class MaintenanceControllerTest extends BaseTestCase {
      */
     public function testAdminAjaxDisabled() : void
     {
-        $this->getHttpClient()->xmlHttpRequest('GET', '/testing/admin/ajax');
+        $user = $this->userToLogged();
 
         $client = $this->getHttpClient();
+        $client->loginUser($user, 'admin');
+        $client->xmlHttpRequest('GET', '/admin/ajax');
         $responseContent = $client->getResponse()->getContent();
 
         $expectedContent = json_encode([
             'status' => 'SUCCESS',
             'data' => [
-                'admin' => true,
+                'success' => true,
             ],
         ]);
 

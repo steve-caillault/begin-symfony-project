@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\{
 	Response,
 	JsonResponse
 };
+/***/
+use App\Controller\Admin\AdminControllerInterface;
 
 final class MaintenanceSubscriber implements EventSubscriberInterface
 {
@@ -34,11 +36,13 @@ final class MaintenanceSubscriber implements EventSubscriberInterface
 	{
 		$response = $event->getResponse();
 		$request = $event->getRequest();
-		
+
+		$controllerParam = $request->attributes->get('_controller');
+        $controllerData = explode('::', $controllerParam);
+        $controllerClassName = $controllerData[0] ?? null;
+
 		// Si on se trouve sur une page du panneau d'administration, on n'affiche pas la maintenance
-		$routeName = $request->attributes->get('_route');
-		$isAdminRoute = (str_contains($routeName, '_admin'));
-		if($isAdminRoute)
+		if(class_exists($controllerClassName) and is_subclass_of($controllerClassName, AdminControllerInterface::class))
 		{
 			return;
 		}

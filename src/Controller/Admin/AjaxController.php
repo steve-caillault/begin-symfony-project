@@ -8,10 +8,8 @@ namespace App\Controller\Admin;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route as RouteAnnotation;
-/***/
-use App\Controller\AjaxController as BaseAjaxController;
 
-final class AjaxController extends BaseAjaxController {
+final class AjaxController extends AdminAjaxController {
 
     /**
      * Appel Ajax du panneau d'administration

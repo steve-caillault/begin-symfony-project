@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\{
 };
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /***/
-use App\Controller\AjaxController;
+use App\Controller\BaseAjaxController;
 
 final class AjaxSubscriber implements EventSubscriberInterface
 {
@@ -40,8 +40,8 @@ final class AjaxSubscriber implements EventSubscriberInterface
         $controllerData = explode('::', $controllerParam);
         $controllerClassName = $controllerData[0] ?? null;
 
-        // On ne s'interesse qu'aux contrôleurs étendant AjaxController
-        if(! class_exists($controllerClassName) or ! is_subclass_of($controllerClassName, AjaxController::class))
+        // On ne s'interesse qu'aux contrôleurs étendant BaseAjaxController
+        if(! class_exists($controllerClassName) or ! is_subclass_of($controllerClassName, BaseAjaxController::class))
         {
             return;
         }

@@ -216,7 +216,7 @@ final class ErrorControllerTest extends BaseTestCase {
     public function testWithoutError() : void
     {
         $client = $this->getHttpClient();
-        $this->getHttpClient()->request('GET', '/testing/');
+        $this->getHttpClient()->request('GET', '/');
 
         $responseContent = $client->getResponse()->getContent();
 
@@ -231,7 +231,7 @@ final class ErrorControllerTest extends BaseTestCase {
     public function testWithoutErrorAjax() : void
     {
         $client = $this->getHttpClient();
-        $client->xmlHttpRequest('GET', '/testing/ajax');
+        $client->xmlHttpRequest('GET', '/ajax');
 
         $response = $client->getResponse()->getContent();
         $expected = [
