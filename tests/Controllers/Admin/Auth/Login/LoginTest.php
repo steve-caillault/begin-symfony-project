@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Tests de l'authentification au panneau d'administration depuis un appel Ajax
+ * Tests de l'authentification au panneau d'administration
  */
 
-namespace App\Tests\Controllers\Admin;
+namespace App\Tests\Controllers\Admin\Auth\Login;
 
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\Routing\RouterInterface;
 /***/
 use App\Tests\BaseTestCase;
 use App\Tests\WithUserCreating;
 
-final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptInterface {
+final class LoginTest extends BaseTestCase implements LoginAttemptInterface {
 
     use WithUserCreating;
 
@@ -21,9 +20,9 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
      * Retourne l'URL d'authentification à utiliser
      * @return string
      */
-    public function getAuthUri() : string
+    public function getAuthLoginUri() : string
     {
-        return $this->getService(RouterInterface::class)->generate('app_admin_security_ajax_login');
+        return $this->getService(RouterInterface::class)->generate('app_admin_security_auth_login');
     }
 
     /**
@@ -34,18 +33,22 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
      */
     public function authAttempt(array $credentials, int $expectedStatus = 200) : Crawler
     {
-        $loginUri = $this->getAuthUri();
+        $loginUri = $this->getAuthLoginUri();
 
         $client = $this->getHttpClient();
+        $client->followRedirects();
 
-        $client->setServerParameter('CONTENT_TYPE', 'application/json');
-        $client->setServerParameter('HTTP_ACCEPT', 'application/json');
+        $crawler = $client->request('GET', $loginUri);
+        $this->assertResponseStatusCodeSame(200);
 
-        $crawler = $client->xmlHttpRequest('POST', $loginUri, content: json_encode($credentials));
+        $submitButton = $crawler->filter('form.login-form input[type=submit]');
+        $formLogin = $submitButton->form();
+
+        $response = $client->submit($formLogin, $credentials);
 
         $this->assertResponseStatusCodeSame($expectedStatus);
 
-        return $crawler;
+        return $response;
     }
 
     /**
@@ -56,42 +59,29 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
     public function checkingInvalidCredentials(array $credentials) : void
     {
         // Tentative de connexion
-        $this->authAttempt($credentials, 401);
-
-        $expectedContent = json_encode([
-            'status' => 'ERROR',
-            'data' => [
-                'error' => 'Les identifiants sont incorrects.',
-            ],
-        ]);
-
-        $responseContent = $this->getHttpClient()->getResponse()->getContent();
-
-        $this->assertEquals($expectedContent, $responseContent);
+        $responsePost = $this->authAttempt($credentials);
+        $error = $responsePost->filter('div.form-input p.error')->getNode(0)?->textContent;
+        $this->assertEquals('Les identifiants sont incorrects.', $error);
     }
     
     /**
-     * Test d'un utilisateur déjà connecté
+     * Test qu'un utilisateur n'est pas redirigé vers la page de connection s'il est déjà connecté
      * @return void
      */
     public function testAlreadyConnected() : void
     {
         $user = $this->userToLogged();
+        $uriNotExpected = $this->getAuthLoginUri();
 
         $client = $this->getHttpClient();
         
+        $client->followRedirects();
         $client->loginUser($user, 'admin');
-        $client->xmlHttpRequest('POST', $this->getAuthUri());
+        $client->request('GET', '/admin');
         
-        $responseExpected = json_encode([
-            'status' => 'SUCCESS',
-            'data' => [
-                'logged' => true,
-            ],
-        ]);
-        $responseContent = $client->getResponse()->getContent();
+        $location = $client->getRequest()->getUri();
         $this->assertResponseStatusCodeSame(200);
-        $this->assertEquals($responseExpected, $responseContent);
+        $this->assertStringNotContainsString($uriNotExpected, $location);
     }
 
     /**
@@ -102,6 +92,8 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
     {
         $user = $this->userToLogged();
 
+        $uriNotExpected = $this->getAuthLoginUri();
+
         $credentials = [
             'id' => $user->getPublicId(),
             'password' => $user->getTestPassword(),
@@ -109,42 +101,49 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
 
         $this->authAttempt($credentials);
 
-        $expectedContent = json_encode([
-            'status' => 'SUCCESS',
-            'data' => [
-                'logged' => true,
-            ],
-        ]);
-
-        $responseContent = $this->getHttpClient()->getResponse()->getContent();
-
-        $this->assertEquals($expectedContent, $responseContent);
+        $location = $this->getHttpClient()->getRequest()->getUri();
+        $this->assertStringNotContainsString($uriNotExpected, $location);
+        $this->assertBrowserNotHasCookie('ADMIN_REMEMBER_ME');
     }
 
     /**
-     * Test d'un appel restreint lorsquil n'y a pas d'utilisateur connecté
+     * Test de la création du cookie remember me
+     * @return void
+     */
+    public function testGrantedCredentialsWithRememberMe()
+    {
+        $user = $this->userToLogged();
+
+        $uriNotExpected = $this->getAuthLoginUri();
+
+        $credentials = [
+            'id' => $user->getPublicId(),
+            'password' => $user->getTestPassword(),
+            'remember_me' => 'on',
+        ];
+
+        $this->authAttempt($credentials);
+
+        $location = $this->getHttpClient()->getRequest()->getUri();
+        $this->assertStringNotContainsString($uriNotExpected, $location);
+        $this->assertBrowserHasCookie('ADMIN_REMEMBER_ME');
+    }
+
+    /**
+     * Test qu'un utilisateur est redirigé vers la page de connection s'il n'est pas connecté
      * @return void
      */
     public function testNotAlreadyConnected() : void
     {
+        $uriExpected = $this->getAuthLoginUri();
+
         $client = $this->getHttpClient();
-        $client->xmlHttpRequest('GET', '/admin/ajax');
+        $client->followRedirects();
+        $client->request('GET', '/admin');
 
-        $loginUrl = $this->getService(RouterInterface::class)->generate(
-            'app_admin_security_auth_login', 
-            referenceType: UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
-        $expectedContent = json_encode([
-            'status' => 'ERROR',
-            'data' => [
-                'login_url' => $loginUrl,
-            ],
-        ]);
-        $responseContent = $this->getHttpClient()->getResponse()->getContent();
-        
-        $this->assertResponseStatusCodeSame(401);
-        $this->assertEquals($expectedContent, $responseContent);
+        $location = $client->getRequest()->getUri();
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertStringContainsString($uriExpected, $location);
     }
 
     /**
@@ -185,8 +184,9 @@ final class AuthAjaxControllerTest extends BaseTestCase implements AuthAttemptIn
      */
     public function testIncorrectCredentials() : void
     {
-        $faker = $this->getFaker();
         $this->userToLogged();
+
+        $faker = $this->getFaker();
 
         $credentials = [
             'id' => $faker->slug(),

@@ -4,17 +4,17 @@
  * Trait pour tester l'authentification
  */
 
-namespace App\Tests\Controllers\Admin;
+namespace App\Tests\Controllers\Admin\Auth\Login;
 
 use Symfony\Component\DomCrawler\Crawler;
 
-interface AuthAttemptInterface {
+interface LoginAttemptInterface {
 
     /**
      * Retourne l'URL d'authentification à utiliser
      * @return string
      */
-    public function getAuthUri() : string;
+    public function getAuthLoginUri() : string;
 
     /**
      * Tentative de connexion
