@@ -176,7 +176,7 @@ final class ErrorControllerTest extends BaseTestCase {
     public function testUnknown() : void
     {
         $client = $this->getHttpClient();
-        $response = $client->request('GET', '/testing/error-666');
+        $response = $client->request('GET', '/testing/error-0');
 
         $message = $response->filter('p')->first()->text();
         $expectedMessage = 'Une erreur s\'est produite.';

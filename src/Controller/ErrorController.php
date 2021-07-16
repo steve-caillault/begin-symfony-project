@@ -42,6 +42,12 @@ final class ErrorController extends AbstractController
         $statusCode = (method_exists($exception, 'getStatusCode')) ? $exception->getStatusCode() : $exception->getCode();
         // $errorMessage = $exception->getMessage();
 
+        // Si le code est invalide
+        if($statusCode <= 100 or $statusCode >= 600)
+        {
+            $statusCode = 500;
+        }
+
         $allowedCodes = [ 401, 403, 404, 500, ];
         $displayingStatusCode = $statusCode;
 		if(! in_array($displayingStatusCode, $allowedCodes))

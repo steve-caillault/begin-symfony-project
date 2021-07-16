@@ -89,7 +89,7 @@ final class DefaultController extends AbstractController {
     #[
         RouteAnnotation(
             path: '/error-{errorStatus}',
-            requirements: [ 'errorStatus' => '[0-9]{3}' ],
+            requirements: [ 'errorStatus' => '[0-9]+' ],
             methods: [ 'GET' ]
         )
     ]
@@ -100,7 +100,7 @@ final class DefaultController extends AbstractController {
             401 => new UnauthorizedHttpException(''),
             403 => new AccessDeniedHttpException(),
             404 => new NotFoundHttpException(),
-            default => new HttpException(500)
+            default => new HttpException($errorStatus)
         };
 
         return $this->forward('App\Controller\ErrorController::index', [
